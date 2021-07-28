@@ -1,0 +1,25 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "referentielms",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "codepays",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20210728113416",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "serviceClass",
+  "entityTableName": "pays",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "referentielms"
+}
