@@ -15,6 +15,11 @@
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210728113416_added_entity_Pays.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210804131243_added_entity_Fonction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210804131610_added_entity_CategorieFournisseur.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210804132106_added_entity_ModeSelection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210804133450_added_entity_TypeAutoriteContractante.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210804134023_added_entity_Banque.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->

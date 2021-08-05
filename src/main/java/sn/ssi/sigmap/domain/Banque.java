@@ -2,16 +2,17 @@ package sn.ssi.sigmap.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
- * A Pays.
+ * A Banque.
  */
 @Entity
-@Table(name = "pays")
+@Table(name = "banque")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Pays implements Serializable {
+public class Banque implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -20,11 +21,15 @@ public class Pays implements Serializable {
   @SequenceGenerator(name = "sequenceGenerator")
   private Long id;
 
-  @Column(name = "libelle")
+  @NotNull
+  @Size(max = 255)
+  @Column(name = "libelle", length = 255, nullable = false)
   private String libelle;
 
-  @Column(name = "codepays")
-  private String codepays;
+  @NotNull
+  @Size(max = 50)
+  @Column(name = "sigle", length = 50, nullable = false)
+  private String sigle;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
   public Long getId() {
@@ -35,7 +40,7 @@ public class Pays implements Serializable {
     this.id = id;
   }
 
-  public Pays id(Long id) {
+  public Banque id(Long id) {
     this.id = id;
     return this;
   }
@@ -44,7 +49,7 @@ public class Pays implements Serializable {
     return this.libelle;
   }
 
-  public Pays libelle(String libelle) {
+  public Banque libelle(String libelle) {
     this.libelle = libelle;
     return this;
   }
@@ -53,17 +58,17 @@ public class Pays implements Serializable {
     this.libelle = libelle;
   }
 
-  public String getCodepays() {
-    return this.codepays;
+  public String getSigle() {
+    return this.sigle;
   }
 
-  public Pays codepays(String codepays) {
-    this.codepays = codepays;
+  public Banque sigle(String sigle) {
+    this.sigle = sigle;
     return this;
   }
 
-  public void setCodepays(String codepays) {
-    this.codepays = codepays;
+  public void setSigle(String sigle) {
+    this.sigle = sigle;
   }
 
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -73,10 +78,10 @@ public class Pays implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Pays)) {
+    if (!(o instanceof Banque)) {
       return false;
     }
-    return id != null && id.equals(((Pays) o).id);
+    return id != null && id.equals(((Banque) o).id);
   }
 
   @Override
@@ -88,10 +93,10 @@ public class Pays implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "Pays{" +
+        return "Banque{" +
             "id=" + getId() +
             ", libelle='" + getLibelle() + "'" +
-            ", codepays='" + getCodepays() + "'" +
+            ", sigle='" + getSigle() + "'" +
             "}";
     }
 }
