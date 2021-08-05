@@ -21,9 +21,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import sn.ssi.sigmap.domain.Fonction;
 import sn.ssi.sigmap.repository.FonctionRepository;
 import sn.ssi.sigmap.web.rest.errors.BadRequestAlertException;
-import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
-import tech.jhipster.web.util.ResponseUtil;
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link sn.ssi.sigmap.domain.Fonction}.

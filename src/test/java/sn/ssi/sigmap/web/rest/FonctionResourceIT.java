@@ -17,14 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import sn.ssi.sigmap.IntegrationTest;
 import sn.ssi.sigmap.domain.Fonction;
 import sn.ssi.sigmap.repository.FonctionRepository;
 
 /**
  * Integration tests for the {@link FonctionResource} REST controller.
  */
-@IntegrationTest
+
 @AutoConfigureMockMvc
 @WithMockUser
 class FonctionResourceIT {

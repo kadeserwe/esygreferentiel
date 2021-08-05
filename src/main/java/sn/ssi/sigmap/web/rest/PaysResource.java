@@ -19,9 +19,9 @@ import sn.ssi.sigmap.domain.Pays;
 import sn.ssi.sigmap.repository.PaysRepository;
 import sn.ssi.sigmap.service.PaysService;
 import sn.ssi.sigmap.web.rest.errors.BadRequestAlertException;
-import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
-import tech.jhipster.web.util.ResponseUtil;
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link sn.ssi.sigmap.domain.Pays}.

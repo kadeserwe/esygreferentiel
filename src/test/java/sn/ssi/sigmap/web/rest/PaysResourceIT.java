@@ -17,14 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import sn.ssi.sigmap.IntegrationTest;
 import sn.ssi.sigmap.domain.Pays;
 import sn.ssi.sigmap.repository.PaysRepository;
 
 /**
  * Integration tests for the {@link PaysResource} REST controller.
  */
-@IntegrationTest
+
 @AutoConfigureMockMvc
 @WithMockUser
 class PaysResourceIT {

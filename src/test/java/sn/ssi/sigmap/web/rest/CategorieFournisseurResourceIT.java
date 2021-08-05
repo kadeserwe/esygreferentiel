@@ -17,14 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import sn.ssi.sigmap.IntegrationTest;
 import sn.ssi.sigmap.domain.CategorieFournisseur;
 import sn.ssi.sigmap.repository.CategorieFournisseurRepository;
 
 /**
  * Integration tests for the {@link CategorieFournisseurResource} REST controller.
  */
-@IntegrationTest
+
 @AutoConfigureMockMvc
 @WithMockUser
 class CategorieFournisseurResourceIT {
