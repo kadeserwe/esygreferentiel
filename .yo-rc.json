@@ -37,7 +37,7 @@
     "blueprints": [],
     "skipClient": true,
     "skipUserManagement": true,
-    "lastLiquibaseTimestamp": 1628605622000,
+    "lastLiquibaseTimestamp": 1628613573000,
     "entities": ["Fonction", "Pays", "CategorieFournisseur", "ModeSelection", "TypeAutoriteContractante", "Banque"]
   }
 }
