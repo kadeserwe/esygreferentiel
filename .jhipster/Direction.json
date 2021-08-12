@@ -1,0 +1,27 @@
+{
+  "microserviceName": "referentielms",
+  "clientRootFolder": "referentielms",
+  "databaseType": "sql",
+  "fields": [
+    {
+      "fieldName": "sigle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "service": "no",
+  "readOnly": false,
+  "pagination": "no",
+  "name": "Direction",
+  "changelogDate": "20210812205533"
+}

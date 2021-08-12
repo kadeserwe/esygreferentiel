@@ -1,0 +1,24 @@
+{
+  "microserviceName": "referentielms",
+  "clientRootFolder": "referentielms",
+  "databaseType": "sql",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "enumSourceFin",
+      "fieldValues": "RESSOURCESEXTERNES,RESSOURCESINTERNESBUDGETDEETAT",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [],
+  "service": "no",
+  "readOnly": false,
+  "pagination": "no",
+  "name": "SourcesFinancement",
+  "changelogDate": "20210812211142"
+}

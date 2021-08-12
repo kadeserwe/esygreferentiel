@@ -1,0 +1,29 @@
+{
+  "microserviceName": "referentielms",
+  "clientRootFolder": "referentielms",
+  "databaseType": "sql",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "localisation",
+      "fieldType": "enumLocalisation",
+      "fieldValues": "LOCALES,ETRANGERES,LESDEUX",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [],
+  "service": "no",
+  "readOnly": false,
+  "pagination": "no",
+  "name": "PiecesAdministratives",
+  "changelogDate": "20210812210734"
+}

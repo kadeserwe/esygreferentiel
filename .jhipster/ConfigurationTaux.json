@@ -1,0 +1,47 @@
+{
+  "microserviceName": "referentielms",
+  "clientRootFolder": "referentielms",
+  "databaseType": "sql",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "taux",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "invalid",
+      "fieldType": "Boolean"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipName": "paysA",
+      "otherEntityName": "pays",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "id"
+    }
+  ],
+  "service": "no",
+  "readOnly": false,
+  "pagination": "no",
+  "name": "ConfigurationTaux",
+  "changelogDate": "20210812205022"
+}

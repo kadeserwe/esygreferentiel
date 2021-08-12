@@ -1,0 +1,23 @@
+{
+  "microserviceName": "referentielms",
+  "clientRootFolder": "referentielms",
+  "databaseType": "sql",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "sigle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [],
+  "service": "no",
+  "readOnly": false,
+  "pagination": "no",
+  "name": "Banque",
+  "changelogDate": "20210812204407"
+}
