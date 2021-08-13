@@ -10,14 +10,16 @@
       "fieldValidateRulesMaxlength": "255"
     },
     {
-      "fieldName": "description",
-      "fieldType": "String"
+      "fieldName": "sigle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "50"
     }
   ],
   "relationships": [],
   "service": "no",
   "readOnly": false,
   "pagination": "pagination",
-  "name": "Fonction",
-  "changelogDate": "20210804131243"
+  "name": "Banque",
+  "changelogDate": "20210804134023"
 }

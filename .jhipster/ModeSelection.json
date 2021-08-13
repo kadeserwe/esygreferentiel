@@ -10,6 +10,12 @@
       "fieldValidateRulesMaxlength": "255"
     },
     {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "50"
+    },
+    {
       "fieldName": "description",
       "fieldType": "String"
     }
@@ -18,6 +24,6 @@
   "service": "no",
   "readOnly": false,
   "pagination": "pagination",
-  "name": "Fonction",
-  "changelogDate": "20210804131243"
+  "name": "ModeSelection",
+  "changelogDate": "20210804132106"
 }

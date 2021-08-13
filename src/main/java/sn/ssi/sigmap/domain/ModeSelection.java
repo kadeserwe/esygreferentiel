@@ -2,16 +2,17 @@ package sn.ssi.sigmap.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
- * A Pays.
+ * A ModeSelection.
  */
 @Entity
-@Table(name = "pays")
+@Table(name = "mode_selection")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Pays implements Serializable {
+public class ModeSelection implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -20,11 +21,18 @@ public class Pays implements Serializable {
   @SequenceGenerator(name = "sequenceGenerator")
   private Long id;
 
-  @Column(name = "libelle")
+  @NotNull
+  @Size(max = 255)
+  @Column(name = "libelle", length = 255, nullable = false)
   private String libelle;
 
-  @Column(name = "codepays")
-  private String codepays;
+  @NotNull
+  @Size(max = 50)
+  @Column(name = "code", length = 50, nullable = false)
+  private String code;
+
+  @Column(name = "description")
+  private String description;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
   public Long getId() {
@@ -35,7 +43,7 @@ public class Pays implements Serializable {
     this.id = id;
   }
 
-  public Pays id(Long id) {
+  public ModeSelection id(Long id) {
     this.id = id;
     return this;
   }
@@ -44,7 +52,7 @@ public class Pays implements Serializable {
     return this.libelle;
   }
 
-  public Pays libelle(String libelle) {
+  public ModeSelection libelle(String libelle) {
     this.libelle = libelle;
     return this;
   }
@@ -53,17 +61,30 @@ public class Pays implements Serializable {
     this.libelle = libelle;
   }
 
-  public String getCodepays() {
-    return this.codepays;
+  public String getCode() {
+    return this.code;
   }
 
-  public Pays codepays(String codepays) {
-    this.codepays = codepays;
+  public ModeSelection code(String code) {
+    this.code = code;
     return this;
   }
 
-  public void setCodepays(String codepays) {
-    this.codepays = codepays;
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
+
+  public ModeSelection description(String description) {
+    this.description = description;
+    return this;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -73,10 +94,10 @@ public class Pays implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Pays)) {
+    if (!(o instanceof ModeSelection)) {
       return false;
     }
-    return id != null && id.equals(((Pays) o).id);
+    return id != null && id.equals(((ModeSelection) o).id);
   }
 
   @Override
@@ -88,10 +109,11 @@ public class Pays implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "Pays{" +
+        return "ModeSelection{" +
             "id=" + getId() +
             ", libelle='" + getLibelle() + "'" +
-            ", codepays='" + getCodepays() + "'" +
+            ", code='" + getCode() + "'" +
+            ", description='" + getDescription() + "'" +
             "}";
     }
 }
