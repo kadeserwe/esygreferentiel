@@ -37,7 +37,30 @@
     "blueprints": [],
     "skipClient": true,
     "skipUserManagement": true,
-    "lastLiquibaseTimestamp": 1628084423000,
-    "entities": ["Fonction", "Pays", "CategorieFournisseur", "ModeSelection", "TypeAutoriteContractante", "Banque"]
+    "lastLiquibaseTimestamp": 1628962888000,
+    "entities": [
+      "Fonction",
+      "Pays",
+      "CategorieFournisseur",
+      "ModeSelection",
+      "TypeAutoriteContractante",
+      "Banque",
+      "CriteresQualification",
+      "Departement",
+      "SituationMatrimoniale",
+      "SpecialitesPersonnel",
+      "TypesMarches",
+      "GroupesImputation",
+      "SourcesFinancement",
+      "PiecesAdministratives",
+      "Hierarchie",
+      "PersonnesRessources",
+      "Direction",
+      "ConfigurationTaux",
+      "Delais",
+      "Garantie",
+      "JoursFeries",
+      "NaturesGarantie"
+    ]
   }
 }

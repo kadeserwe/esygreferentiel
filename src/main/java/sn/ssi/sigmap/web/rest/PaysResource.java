@@ -22,7 +22,6 @@ import sn.ssi.sigmap.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-
 /**
  * REST controller for managing {@link sn.ssi.sigmap.domain.Pays}.
  */
