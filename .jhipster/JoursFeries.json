@@ -1,0 +1,26 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "referentielms",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "date",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20210814124637",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "no",
+  "entityTableName": "jours_feries",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "referentielms"
+}
