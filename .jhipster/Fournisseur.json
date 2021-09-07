@@ -1,0 +1,92 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "referentielms",
+  "relationships": [
+    {
+      "relationshipName": "categorieFournisseur",
+      "otherEntityName": "categorieFournisseur",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "otherEntityRelationshipName": "fournisseur"
+    },
+    {
+      "relationshipName": "pays",
+      "otherEntityName": "pays",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "otherEntityRelationshipName": "fournisseur"
+    }
+  ],
+  "fields": [
+    {
+      "fieldName": "raisonSociale",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "adresse",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": 20
+    },
+    {
+      "fieldName": "fax",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "15"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "15"
+    },
+    {
+      "fieldName": "pieceJointe",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "15"
+    },
+    {
+      "fieldName": "numeroRegistreCommerce",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "15"
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "sigle",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "7"
+    },
+    {
+      "fieldName": "numeroIdentiteFiscale",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "7"
+    }
+  ],
+  "changelogDate": "20210902111622",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "no",
+  "entityTableName": "fournisseur",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "referentielms"
+}
