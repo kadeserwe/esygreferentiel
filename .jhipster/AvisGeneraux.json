@@ -1,0 +1,50 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "referentielms",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "numero",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "annee",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fichierAvis",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    },
+    {
+      "fieldName": "version",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "lastVersionValid",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "etat",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "datePublication",
+      "fieldType": "Instant"
+    }
+  ],
+  "changelogDate": "20210923140119",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "no",
+  "entityTableName": "avis_generaux",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "referentielms"
+}
