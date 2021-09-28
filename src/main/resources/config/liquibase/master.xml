@@ -37,8 +37,11 @@
     <include file="config/liquibase/changelog/20210814173427_added_entity_Garantie.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814173843_added_entity_NaturesGarantie.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814174128_added_entity_SourcesFinancement.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210902111622_added_entity_Fournisseur.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210923140119_added_entity_AvisGeneraux.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20210814125727_added_entity_constraints_ConfigurationTaux.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210902111622_added_entity_constraints_Fournisseur.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>
