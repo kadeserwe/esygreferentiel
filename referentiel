@@ -1,0 +1,172 @@
+application {
+  config {
+    applicationType microservice
+    authenticationType jwt
+    baseName referentielms
+    blueprints []
+    buildTool maven
+    cacheProvider hazelcast
+    clientPackageManager npm
+    creationTimestamp 1627471404959
+    databaseType sql
+    devDatabaseType postgresql
+    dtoSuffix DTO
+    embeddableLaunchScript false
+    enableHibernateCache true
+    enableSwaggerCodegen false
+    enableTranslation true
+    jhiPrefix jhi
+    jhipsterVersion "6.10.5"
+    jwtSecretKey "MmY1Yzc3MWQ3NjAxMWFlNzFlNjE4MmQ4MzJiMTM3YmJiYjZhZTI2NjEyYTI5ZDE4YjBkNzBmNzE3MmJmNzEwZjg1Y2MwZWFmZmI4MzRlMTVlMDNiYzk4YjRlYzE2ZWEwNWM3NDEzYWFkNDY5NjExYTAyNjcyYTM5NWQ1MjBiMzA="
+    languages [fr]
+    messageBroker false
+    nativeLanguage fr
+    otherModules []
+    packageName sn.ssi.sigmap
+    prodDatabaseType postgresql
+    searchEngine false
+    serverPort 7073
+    serviceDiscoveryType eureka
+    skipClient true
+    skipUserManagement true
+    testFrameworks []
+    websocket false
+  }
+
+  entities Banque, CategorieFournisseur, ConfigurationTaux, CriteresQualification, Delais, Departement, Direction, Fonction, Fournisseur, Garantie, GroupesImputation, Hierarchie, JoursFeries, ModeSelection, NaturesGarantie, Pays, PersonnesRessources, PiecesAdministratives, SituationMatrimoniale, SourcesFinancement, SpecialitesPersonnel, TypeAutoriteContractante, TypesMarches
+}
+
+entity Banque {
+  libelle String required maxlength(255),
+  sigle String required maxlength(50)
+}
+entity CategorieFournisseur {
+  libelle String required maxlength(255),
+  description String
+}
+entity ConfigurationTaux {
+  code String required,
+  libelle String required,
+  taux Double required,
+  dateDebut Instant,
+  dateFin Instant,
+  invalid Boolean
+}
+entity CriteresQualification {
+  libelle String
+}
+entity Delais {
+  libelle String required,
+  code String required,
+  unite String required,
+  valeur Integer required,
+  debutValidite Instant required,
+  finValidite Instant required,
+  commentaires String
+}
+entity Departement {
+  libelle String
+}
+entity Direction {
+  sigle String required,
+  libelle String required,
+  description String
+}
+entity Fonction {
+  libelle String required maxlength(255),
+  description String
+}
+entity Fournisseur {
+  raisonSociale String required maxlength(255),
+  adresse String required,
+  email String maxlength(20),
+  fax String maxlength(15),
+  telephone String maxlength(15),
+  pieceJointe String maxlength(15),
+  numeroRegistreCommerce String maxlength(15),
+  date Instant required,
+  sigle String maxlength(7),
+  numeroIdentiteFiscale String maxlength(7)
+}
+entity Garantie {
+  libelle String required,
+  typeGarantie String required,
+  description String
+}
+entity GroupesImputation {
+  libelle String required,
+  description String
+}
+entity Hierarchie {
+  libelle String required
+}
+entity JoursFeries {
+  date Instant required,
+  description String
+}
+entity ModeSelection {
+  libelle String required maxlength(255),
+  code String required maxlength(50),
+  description String
+}
+entity NaturesGarantie {
+  libelle String required
+}
+entity Pays {
+  libelle String,
+  codepays String
+}
+entity PersonnesRessources {
+  nom String required,
+  prenom String required,
+  telephone Long required,
+  email String required,
+  fonction String required,
+  commentaires String
+}
+entity PiecesAdministratives {
+  code String required,
+  libelle String required,
+  description String,
+  localisation enumLocalisation required,
+  type Integer
+}
+entity SituationMatrimoniale {
+  libelle String required
+}
+entity SourcesFinancement {
+  code String required,
+  libelle String required,
+  corbeille String
+}
+entity SpecialitesPersonnel {
+  libelle String required
+}
+entity TypeAutoriteContractante {
+  libelle String required maxlength(255),
+  code String required maxlength(10),
+  description String,
+  ordre Integer required,
+  chapitre String required maxlength(10)
+}
+entity TypesMarches {
+  code String required,
+  libelle String,
+  description String
+}
+enum enumLocalisation {
+  LOCALES,
+  ETRANGERES,
+  LESDEUX
+}
+
+relationship ManyToOne {
+  ConfigurationTaux{pays required} to Pays,
+  Fournisseur{categorieFournisseur required} to CategorieFournisseur,
+  Fournisseur{pays required} to Pays
+}
+
+paginate Banque, CategorieFournisseur, ConfigurationTaux, CriteresQualification, Delais, Departement, Direction, Fonction, Fournisseur, Garantie, GroupesImputation, Hierarchie, JoursFeries, ModeSelection, NaturesGarantie, Pays, PiecesAdministratives, SituationMatrimoniale, SourcesFinancement, SpecialitesPersonnel, TypeAutoriteContractante with pagination
+microservice Banque, CategorieFournisseur, ConfigurationTaux, CriteresQualification, Delais, Departement, Direction, Fonction, Fournisseur, Garantie, GroupesImputation, Hierarchie, JoursFeries, ModeSelection, NaturesGarantie, Pays, PersonnesRessources, PiecesAdministratives, SituationMatrimoniale, SourcesFinancement, SpecialitesPersonnel, TypeAutoriteContractante, TypesMarches with referentielms
+clientRootFolder Banque, CategorieFournisseur, ConfigurationTaux, CriteresQualification, Delais, Departement, Direction, Fonction, Fournisseur, Garantie, GroupesImputation, Hierarchie, JoursFeries, ModeSelection, NaturesGarantie, Pays, PersonnesRessources, PiecesAdministratives, SituationMatrimoniale, SourcesFinancement, SpecialitesPersonnel, TypeAutoriteContractante, TypesMarches with referentielms
+service Pays with serviceClass
