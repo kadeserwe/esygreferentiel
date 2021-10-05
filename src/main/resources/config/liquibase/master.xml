@@ -30,7 +30,8 @@
     <include file="config/liquibase/changelog/20210813235515_added_entity_Hierarchie.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814000333_added_entity_PersonnesRessources.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814001315_added_entity_Direction.xml" relativeToChangelogFile="false"/>
-
+    <include file="config/liquibase/changelog/20210907231433_added_entity_Categories.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210919232426_added_entity_SygAutoriteContractante.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814124637_added_entity_JoursFeries.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814125727_added_entity_ConfigurationTaux.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814130717_added_entity_Delais.xml" relativeToChangelogFile="false"/>
