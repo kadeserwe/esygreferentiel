@@ -8,10 +8,10 @@
 
     
     <!--
-        Added the entity ConfigurationTaux.
+        Added the entity TypesMarches.
     -->
-    <changeSet id="20210814125727-1" author="jhipster">
-        <createTable tableName="configuration_taux">
+    <changeSet id="20211028200715-1" author="jhipster">
+        <createTable tableName="types_marches">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -21,28 +21,14 @@
             <column name="libelle" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="taux" type="double">
-                <constraints nullable="false" />
-            </column>
-            <column name="date_debut" type="datetime">
-                <constraints nullable="true" />
-            </column>
-            <column name="date_fin" type="datetime">
-                <constraints nullable="true" />
-            </column>
-            <column name="invalid" type="boolean">
-                <constraints nullable="true" />
-            </column>
-            <column name="pays_id" type="bigint">
+            <column name="description" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
-        <dropDefaultValue tableName="configuration_taux" columnName="date_debut" columnDataType="datetime"/>
-        <dropDefaultValue tableName="configuration_taux" columnName="date_fin" columnDataType="datetime"/>
     </changeSet>
 
-    <changeSet id="20210814125727-1-relations" author="jhipster">
+    <changeSet id="20211028200715-1-relations" author="jhipster">
 
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -55,19 +41,15 @@
           This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
           Spring Boot configuration key.
     -->
-    <changeSet id="20210814125727-1-data" author="jhipster" context="faker">
+    <changeSet id="20211028200715-1-data" author="jhipster" context="faker">
         <loadData
-                  file="config/liquibase/fake-data/configuration_taux.csv"
+                  file="config/liquibase/fake-data/types_marches.csv"
                   separator=";"
-                  tableName="configuration_taux">
+                  tableName="types_marches">
             <column name="id" type="numeric"/>
             <column name="code" type="string"/>
             <column name="libelle" type="string"/>
-            <column name="taux" type="numeric"/>
-            <column name="date_debut" type="datetime"/>
-            <column name="date_fin" type="datetime"/>
-            <column name="invalid" type="boolean"/>
-            <column name="pays_id" type="numeric"/>
+            <column name="description" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

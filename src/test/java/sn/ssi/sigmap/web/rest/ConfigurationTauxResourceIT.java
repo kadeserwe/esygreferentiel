@@ -2,7 +2,6 @@ package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
 import sn.ssi.sigmap.domain.ConfigurationTaux;
-import sn.ssi.sigmap.domain.Pays;
 import sn.ssi.sigmap.repository.ConfigurationTauxRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.List;
 
+import static sn.ssi.sigmap.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,11 +43,11 @@ public class ConfigurationTauxResourceIT {
     private static final Double DEFAULT_TAUX = 1D;
     private static final Double UPDATED_TAUX = 2D;
 
-    private static final Instant DEFAULT_DATE_DEBUT = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_DATE_DEBUT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final ZonedDateTime DEFAULT_DATE_DEBUT = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_DATE_DEBUT = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final Instant DEFAULT_DATE_FIN = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_DATE_FIN = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final ZonedDateTime DEFAULT_DATE_FIN = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_DATE_FIN = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final Boolean DEFAULT_INVALID = false;
     private static final Boolean UPDATED_INVALID = true;
@@ -75,16 +77,6 @@ public class ConfigurationTauxResourceIT {
             .dateDebut(DEFAULT_DATE_DEBUT)
             .dateFin(DEFAULT_DATE_FIN)
             .invalid(DEFAULT_INVALID);
-        // Add required entity
-        Pays pays;
-        if (TestUtil.findAll(em, Pays.class).isEmpty()) {
-            pays = PaysResourceIT.createEntity(em);
-            em.persist(pays);
-            em.flush();
-        } else {
-            pays = TestUtil.findAll(em, Pays.class).get(0);
-        }
-        configurationTaux.setPays(pays);
         return configurationTaux;
     }
     /**
@@ -101,16 +93,6 @@ public class ConfigurationTauxResourceIT {
             .dateDebut(UPDATED_DATE_DEBUT)
             .dateFin(UPDATED_DATE_FIN)
             .invalid(UPDATED_INVALID);
-        // Add required entity
-        Pays pays;
-        if (TestUtil.findAll(em, Pays.class).isEmpty()) {
-            pays = PaysResourceIT.createUpdatedEntity(em);
-            em.persist(pays);
-            em.flush();
-        } else {
-            pays = TestUtil.findAll(em, Pays.class).get(0);
-        }
-        configurationTaux.setPays(pays);
         return configurationTaux;
     }
 
@@ -163,10 +145,10 @@ public class ConfigurationTauxResourceIT {
 
     @Test
     @Transactional
-    public void checkCodeIsRequired() throws Exception {
+    public void checkDateDebutIsRequired() throws Exception {
         int databaseSizeBeforeTest = configurationTauxRepository.findAll().size();
         // set the field null
-        configurationTaux.setCode(null);
+        configurationTaux.setDateDebut(null);
 
         // Create the ConfigurationTaux, which fails.
 
@@ -182,10 +164,10 @@ public class ConfigurationTauxResourceIT {
 
     @Test
     @Transactional
-    public void checkLibelleIsRequired() throws Exception {
+    public void checkDateFinIsRequired() throws Exception {
         int databaseSizeBeforeTest = configurationTauxRepository.findAll().size();
         // set the field null
-        configurationTaux.setLibelle(null);
+        configurationTaux.setDateFin(null);
 
         // Create the ConfigurationTaux, which fails.
 
@@ -201,10 +183,10 @@ public class ConfigurationTauxResourceIT {
 
     @Test
     @Transactional
-    public void checkTauxIsRequired() throws Exception {
+    public void checkInvalidIsRequired() throws Exception {
         int databaseSizeBeforeTest = configurationTauxRepository.findAll().size();
         // set the field null
-        configurationTaux.setTaux(null);
+        configurationTaux.setInvalid(null);
 
         // Create the ConfigurationTaux, which fails.
 
@@ -232,8 +214,8 @@ public class ConfigurationTauxResourceIT {
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].libelle").value(hasItem(DEFAULT_LIBELLE)))
             .andExpect(jsonPath("$.[*].taux").value(hasItem(DEFAULT_TAUX.doubleValue())))
-            .andExpect(jsonPath("$.[*].dateDebut").value(hasItem(DEFAULT_DATE_DEBUT.toString())))
-            .andExpect(jsonPath("$.[*].dateFin").value(hasItem(DEFAULT_DATE_FIN.toString())))
+            .andExpect(jsonPath("$.[*].dateDebut").value(hasItem(sameInstant(DEFAULT_DATE_DEBUT))))
+            .andExpect(jsonPath("$.[*].dateFin").value(hasItem(sameInstant(DEFAULT_DATE_FIN))))
             .andExpect(jsonPath("$.[*].invalid").value(hasItem(DEFAULT_INVALID.booleanValue())));
     }
     
@@ -251,8 +233,8 @@ public class ConfigurationTauxResourceIT {
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.libelle").value(DEFAULT_LIBELLE))
             .andExpect(jsonPath("$.taux").value(DEFAULT_TAUX.doubleValue()))
-            .andExpect(jsonPath("$.dateDebut").value(DEFAULT_DATE_DEBUT.toString()))
-            .andExpect(jsonPath("$.dateFin").value(DEFAULT_DATE_FIN.toString()))
+            .andExpect(jsonPath("$.dateDebut").value(sameInstant(DEFAULT_DATE_DEBUT)))
+            .andExpect(jsonPath("$.dateFin").value(sameInstant(DEFAULT_DATE_FIN)))
             .andExpect(jsonPath("$.invalid").value(DEFAULT_INVALID.booleanValue()));
     }
     @Test

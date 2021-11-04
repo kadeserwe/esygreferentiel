@@ -1,12 +1,14 @@
 package sn.ssi.sigmap.repository;
 
-import org.springframework.data.jpa.repository.*;
-import org.springframework.stereotype.Repository;
 import sn.ssi.sigmap.domain.Pays;
 
+import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
+
 /**
- * Spring Data SQL repository for the Pays entity.
+ * Spring Data  repository for the Pays entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PaysRepository extends JpaRepository<Pays, Long> {}
+public interface PaysRepository extends JpaRepository<Pays, Long> {
+}

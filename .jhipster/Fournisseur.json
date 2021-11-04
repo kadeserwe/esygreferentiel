@@ -6,7 +6,6 @@
       "relationshipName": "categorieFournisseur",
       "otherEntityName": "categorieFournisseur",
       "relationshipType": "many-to-one",
-      "relationshipValidateRules": ["required"],
       "otherEntityField": "id",
       "otherEntityRelationshipName": "fournisseur"
     },
@@ -14,7 +13,6 @@
       "relationshipName": "pays",
       "otherEntityName": "pays",
       "relationshipType": "many-to-one",
-      "relationshipValidateRules": ["required"],
       "otherEntityField": "id",
       "otherEntityRelationshipName": "fournisseur"
     }
@@ -23,8 +21,7 @@
     {
       "fieldName": "raisonSociale",
       "fieldType": "String",
-      "fieldValidateRules": ["required", "maxlength"],
-      "fieldValidateRulesMaxlength": "255"
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "adresse",
@@ -34,52 +31,36 @@
     {
       "fieldName": "email",
       "fieldType": "String",
-      "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": 20
-    },
-    {
-      "fieldName": "fax",
-      "fieldType": "String",
-      "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": "15"
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "telephone",
       "fieldType": "String",
-      "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": "15"
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "pieceJointe",
-      "fieldType": "String",
-      "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": "15"
+      "fieldType": "String"
     },
     {
       "fieldName": "numeroRegistreCommerce",
-      "fieldType": "String",
-      "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": "15"
+      "fieldType": "String"
     },
     {
       "fieldName": "date",
-      "fieldType": "Instant",
+      "fieldType": "ZonedDateTime",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "sigle",
-      "fieldType": "String",
-      "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": "7"
+      "fieldType": "String"
     },
     {
       "fieldName": "numeroIdentiteFiscale",
-      "fieldType": "String",
-      "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": "7"
+      "fieldType": "String"
     }
   ],
-  "changelogDate": "20210902111622",
+  "changelogDate": "20211104112100",
   "dto": "no",
   "searchEngine": false,
   "service": "no",

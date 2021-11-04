@@ -1,7 +1,7 @@
 {
-  "microserviceName": "referentielms",
+  "fluentMethods": true,
   "clientRootFolder": "referentielms",
-  "databaseType": "sql",
+  "relationships": [],
   "fields": [
     {
       "fieldName": "code",
@@ -10,17 +10,23 @@
     },
     {
       "fieldName": "libelle",
-      "fieldType": "String"
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "description",
-      "fieldType": "String"
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     }
   ],
-  "relationships": [],
+  "changelogDate": "20211028200715",
+  "dto": "no",
+  "searchEngine": false,
   "service": "no",
+  "entityTableName": "types_marches",
+  "databaseType": "sql",
   "readOnly": false,
-  "pagination": "no",
-  "name": "TypesMarches",
-  "changelogDate": "20210813224608"
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "referentielms"
 }

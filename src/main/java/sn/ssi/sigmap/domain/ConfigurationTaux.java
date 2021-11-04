@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 /**
  * A ConfigurationTaux.
@@ -25,29 +25,28 @@ public class ConfigurationTaux implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Column(name = "code", nullable = false)
+    @Column(name = "code")
     private String code;
 
-    @NotNull
-    @Column(name = "libelle", nullable = false)
+    @Column(name = "libelle")
     private String libelle;
 
-    @NotNull
-    @Column(name = "taux", nullable = false)
+    @Column(name = "taux")
     private Double taux;
 
-    @Column(name = "date_debut")
-    private Instant dateDebut;
+    @NotNull
+    @Column(name = "date_debut", nullable = false)
+    private ZonedDateTime dateDebut;
 
-    @Column(name = "date_fin")
-    private Instant dateFin;
+    @NotNull
+    @Column(name = "date_fin", nullable = false)
+    private ZonedDateTime dateFin;
 
-    @Column(name = "invalid")
+    @NotNull
+    @Column(name = "invalid", nullable = false)
     private Boolean invalid;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     @JsonIgnoreProperties(value = "configurationTauxes", allowSetters = true)
     private Pays pays;
 
@@ -99,29 +98,29 @@ public class ConfigurationTaux implements Serializable {
         this.taux = taux;
     }
 
-    public Instant getDateDebut() {
+    public ZonedDateTime getDateDebut() {
         return dateDebut;
     }
 
-    public ConfigurationTaux dateDebut(Instant dateDebut) {
+    public ConfigurationTaux dateDebut(ZonedDateTime dateDebut) {
         this.dateDebut = dateDebut;
         return this;
     }
 
-    public void setDateDebut(Instant dateDebut) {
+    public void setDateDebut(ZonedDateTime dateDebut) {
         this.dateDebut = dateDebut;
     }
 
-    public Instant getDateFin() {
+    public ZonedDateTime getDateFin() {
         return dateFin;
     }
 
-    public ConfigurationTaux dateFin(Instant dateFin) {
+    public ConfigurationTaux dateFin(ZonedDateTime dateFin) {
         this.dateFin = dateFin;
         return this;
     }
 
-    public void setDateFin(Instant dateFin) {
+    public void setDateFin(ZonedDateTime dateFin) {
         this.dateFin = dateFin;
     }
 

@@ -1,26 +1,26 @@
 {
-  "microserviceName": "referentielms",
+  "fluentMethods": true,
   "clientRootFolder": "referentielms",
-  "databaseType": "sql",
+  "relationships": [],
   "fields": [
-    {
-      "fieldName": "nom",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
-    },
     {
       "fieldName": "prenom",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "telephone",
-      "fieldType": "Long",
+      "fieldName": "nom",
+      "fieldType": "String",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "email",
       "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "Long",
       "fieldValidateRules": ["required"]
     },
     {
@@ -33,10 +33,14 @@
       "fieldType": "String"
     }
   ],
-  "relationships": [],
+  "changelogDate": "20211103104302",
+  "dto": "no",
+  "searchEngine": false,
   "service": "no",
+  "entityTableName": "personnes_ressources",
+  "databaseType": "sql",
   "readOnly": false,
-  "pagination": "no",
-  "name": "PersonnesRessources",
-  "changelogDate": "20210814000333"
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "referentielms"
 }

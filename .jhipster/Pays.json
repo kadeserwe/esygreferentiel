@@ -5,22 +5,23 @@
   "fields": [
     {
       "fieldName": "libelle",
-      "fieldType": "String"
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "codepays",
-      "fieldType": "String"
+      "fieldName": "codePays",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     }
   ],
-  "changelogDate": "20210728113416",
+  "changelogDate": "20211103233726",
   "dto": "no",
   "searchEngine": false,
-  "service": "serviceClass",
+  "service": "no",
   "entityTableName": "pays",
   "databaseType": "sql",
   "readOnly": false,
   "jpaMetamodelFiltering": false,
   "pagination": "pagination",
-  "microserviceName": "referentielms",
-  "name": "Pays"
+  "microserviceName": "referentielms"
 }

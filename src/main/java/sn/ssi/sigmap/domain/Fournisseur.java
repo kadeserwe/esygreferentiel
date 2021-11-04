@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 /**
  * A Fournisseur.
@@ -26,53 +26,42 @@ public class Fournisseur implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(max = 255)
-    @Column(name = "raison_sociale", length = 255, nullable = false)
+    @Column(name = "raison_sociale", nullable = false)
     private String raisonSociale;
 
     @NotNull
     @Column(name = "adresse", nullable = false)
     private String adresse;
 
-    @Size(max = 20)
-    @Column(name = "email", length = 20)
+    @NotNull
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Size(max = 15)
-    @Column(name = "fax", length = 15)
-    private String fax;
-
-    @Size(max = 15)
-    @Column(name = "telephone", length = 15)
+    @NotNull
+    @Column(name = "telephone", nullable = false)
     private String telephone;
 
-    @Size(max = 15)
-    @Column(name = "piece_jointe", length = 15)
+    @Column(name = "piece_jointe")
     private String pieceJointe;
 
-    @Size(max = 15)
-    @Column(name = "numero_registre_commerce", length = 15)
+    @Column(name = "numero_registre_commerce")
     private String numeroRegistreCommerce;
 
     @NotNull
     @Column(name = "date", nullable = false)
-    private Instant date;
+    private ZonedDateTime date;
 
-    @Size(max = 7)
-    @Column(name = "sigle", length = 7)
+    @Column(name = "sigle")
     private String sigle;
 
-    @Size(max = 7)
-    @Column(name = "numero_identite_fiscale", length = 7)
+    @Column(name = "numero_identite_fiscale")
     private String numeroIdentiteFiscale;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     @JsonIgnoreProperties(value = "fournisseurs", allowSetters = true)
     private CategorieFournisseur categorieFournisseur;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     @JsonIgnoreProperties(value = "fournisseurs", allowSetters = true)
     private Pays pays;
 
@@ -124,19 +113,6 @@ public class Fournisseur implements Serializable {
         this.email = email;
     }
 
-    public String getFax() {
-        return fax;
-    }
-
-    public Fournisseur fax(String fax) {
-        this.fax = fax;
-        return this;
-    }
-
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-
     public String getTelephone() {
         return telephone;
     }
@@ -176,16 +152,16 @@ public class Fournisseur implements Serializable {
         this.numeroRegistreCommerce = numeroRegistreCommerce;
     }
 
-    public Instant getDate() {
+    public ZonedDateTime getDate() {
         return date;
     }
 
-    public Fournisseur date(Instant date) {
+    public Fournisseur date(ZonedDateTime date) {
         this.date = date;
         return this;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(ZonedDateTime date) {
         this.date = date;
     }
 
@@ -266,7 +242,6 @@ public class Fournisseur implements Serializable {
             ", raisonSociale='" + getRaisonSociale() + "'" +
             ", adresse='" + getAdresse() + "'" +
             ", email='" + getEmail() + "'" +
-            ", fax='" + getFax() + "'" +
             ", telephone='" + getTelephone() + "'" +
             ", pieceJointe='" + getPieceJointe() + "'" +
             ", numeroRegistreCommerce='" + getNumeroRegistreCommerce() + "'" +

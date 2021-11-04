@@ -1,23 +1,27 @@
 {
-  "microserviceName": "referentielms",
+  "fluentMethods": true,
   "clientRootFolder": "referentielms",
-  "databaseType": "sql",
+  "relationships": [],
   "fields": [
     {
       "fieldName": "libelle",
       "fieldType": "String",
-      "fieldValidateRules": ["required", "maxlength"],
-      "fieldValidateRulesMaxlength": "255"
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "description",
-      "fieldType": "String"
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     }
   ],
-  "relationships": [],
+  "changelogDate": "20211103141313",
+  "dto": "no",
+  "searchEngine": false,
   "service": "no",
+  "entityTableName": "categorie_fournisseur",
+  "databaseType": "sql",
   "readOnly": false,
+  "jpaMetamodelFiltering": false,
   "pagination": "pagination",
-  "name": "CategorieFournisseur",
-  "changelogDate": "20210804131610"
+  "microserviceName": "referentielms"
 }

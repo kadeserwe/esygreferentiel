@@ -6,7 +6,6 @@
       "relationshipName": "pays",
       "otherEntityName": "pays",
       "relationshipType": "many-to-one",
-      "relationshipValidateRules": ["required"],
       "otherEntityField": "id",
       "otherEntityRelationshipName": "configurationTaux"
     }
@@ -14,33 +13,33 @@
   "fields": [
     {
       "fieldName": "code",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "String"
     },
     {
       "fieldName": "libelle",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "String"
     },
     {
       "fieldName": "taux",
-      "fieldType": "Double",
-      "fieldValidateRules": ["required"]
+      "fieldType": "Double"
     },
     {
       "fieldName": "dateDebut",
-      "fieldType": "Instant"
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "dateFin",
-      "fieldType": "Instant"
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "invalid",
-      "fieldType": "Boolean"
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
     }
   ],
-  "changelogDate": "20210814125727",
+  "changelogDate": "20211104104824",
   "dto": "no",
   "searchEngine": false,
   "service": "no",
