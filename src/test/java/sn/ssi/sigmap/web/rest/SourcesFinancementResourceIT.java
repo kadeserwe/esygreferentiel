@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.SourcesFinancement;
 import sn.ssi.sigmap.repository.SourcesFinancementRepository;
 
@@ -18,13 +19,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link SourcesFinancementResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class SourcesFinancementResourceIT {
@@ -86,7 +88,7 @@ public class SourcesFinancementResourceIT {
     public void createSourcesFinancement() throws Exception {
         int databaseSizeBeforeCreate = sourcesFinancementRepository.findAll().size();
         // Create the SourcesFinancement
-        restSourcesFinancementMockMvc.perform(post("/api/sources-financements")
+        restSourcesFinancementMockMvc.perform(post("/api/sources-financements").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sourcesFinancement)))
             .andExpect(status().isCreated());
@@ -109,7 +111,7 @@ public class SourcesFinancementResourceIT {
         sourcesFinancement.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restSourcesFinancementMockMvc.perform(post("/api/sources-financements")
+        restSourcesFinancementMockMvc.perform(post("/api/sources-financements").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sourcesFinancement)))
             .andExpect(status().isBadRequest());
@@ -130,7 +132,7 @@ public class SourcesFinancementResourceIT {
         // Create the SourcesFinancement, which fails.
 
 
-        restSourcesFinancementMockMvc.perform(post("/api/sources-financements")
+        restSourcesFinancementMockMvc.perform(post("/api/sources-financements").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sourcesFinancement)))
             .andExpect(status().isBadRequest());
@@ -149,7 +151,7 @@ public class SourcesFinancementResourceIT {
         // Create the SourcesFinancement, which fails.
 
 
-        restSourcesFinancementMockMvc.perform(post("/api/sources-financements")
+        restSourcesFinancementMockMvc.perform(post("/api/sources-financements").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sourcesFinancement)))
             .andExpect(status().isBadRequest());
@@ -214,7 +216,7 @@ public class SourcesFinancementResourceIT {
             .libelle(UPDATED_LIBELLE)
             .corbeille(UPDATED_CORBEILLE);
 
-        restSourcesFinancementMockMvc.perform(put("/api/sources-financements")
+        restSourcesFinancementMockMvc.perform(put("/api/sources-financements").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedSourcesFinancement)))
             .andExpect(status().isOk());
@@ -234,7 +236,7 @@ public class SourcesFinancementResourceIT {
         int databaseSizeBeforeUpdate = sourcesFinancementRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restSourcesFinancementMockMvc.perform(put("/api/sources-financements")
+        restSourcesFinancementMockMvc.perform(put("/api/sources-financements").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sourcesFinancement)))
             .andExpect(status().isBadRequest());
@@ -253,7 +255,7 @@ public class SourcesFinancementResourceIT {
         int databaseSizeBeforeDelete = sourcesFinancementRepository.findAll().size();
 
         // Delete the sourcesFinancement
-        restSourcesFinancementMockMvc.perform(delete("/api/sources-financements/{id}", sourcesFinancement.getId())
+        restSourcesFinancementMockMvc.perform(delete("/api/sources-financements/{id}", sourcesFinancement.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

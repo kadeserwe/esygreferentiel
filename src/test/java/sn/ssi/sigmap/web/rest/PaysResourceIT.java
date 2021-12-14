@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.Pays;
 import sn.ssi.sigmap.repository.PaysRepository;
 
@@ -18,13 +19,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link PaysResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class PaysResourceIT {
@@ -81,7 +83,7 @@ public class PaysResourceIT {
     public void createPays() throws Exception {
         int databaseSizeBeforeCreate = paysRepository.findAll().size();
         // Create the Pays
-        restPaysMockMvc.perform(post("/api/pays")
+        restPaysMockMvc.perform(post("/api/pays").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pays)))
             .andExpect(status().isCreated());
@@ -103,7 +105,7 @@ public class PaysResourceIT {
         pays.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restPaysMockMvc.perform(post("/api/pays")
+        restPaysMockMvc.perform(post("/api/pays").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pays)))
             .andExpect(status().isBadRequest());
@@ -124,7 +126,7 @@ public class PaysResourceIT {
         // Create the Pays, which fails.
 
 
-        restPaysMockMvc.perform(post("/api/pays")
+        restPaysMockMvc.perform(post("/api/pays").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pays)))
             .andExpect(status().isBadRequest());
@@ -143,7 +145,7 @@ public class PaysResourceIT {
         // Create the Pays, which fails.
 
 
-        restPaysMockMvc.perform(post("/api/pays")
+        restPaysMockMvc.perform(post("/api/pays").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pays)))
             .andExpect(status().isBadRequest());
@@ -205,7 +207,7 @@ public class PaysResourceIT {
             .libelle(UPDATED_LIBELLE)
             .codePays(UPDATED_CODE_PAYS);
 
-        restPaysMockMvc.perform(put("/api/pays")
+        restPaysMockMvc.perform(put("/api/pays").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedPays)))
             .andExpect(status().isOk());
@@ -224,7 +226,7 @@ public class PaysResourceIT {
         int databaseSizeBeforeUpdate = paysRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restPaysMockMvc.perform(put("/api/pays")
+        restPaysMockMvc.perform(put("/api/pays").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pays)))
             .andExpect(status().isBadRequest());
@@ -243,7 +245,7 @@ public class PaysResourceIT {
         int databaseSizeBeforeDelete = paysRepository.findAll().size();
 
         // Delete the pays
-        restPaysMockMvc.perform(delete("/api/pays/{id}", pays.getId())
+        restPaysMockMvc.perform(delete("/api/pays/{id}", pays.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

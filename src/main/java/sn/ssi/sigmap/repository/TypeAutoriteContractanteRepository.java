@@ -1,12 +1,14 @@
 package sn.ssi.sigmap.repository;
 
-import org.springframework.data.jpa.repository.*;
-import org.springframework.stereotype.Repository;
 import sn.ssi.sigmap.domain.TypeAutoriteContractante;
 
+import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
+
 /**
- * Spring Data SQL repository for the TypeAutoriteContractante entity.
+ * Spring Data  repository for the TypeAutoriteContractante entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TypeAutoriteContractanteRepository extends JpaRepository<TypeAutoriteContractante, Long> {}
+public interface TypeAutoriteContractanteRepository extends JpaRepository<TypeAutoriteContractante, Long> {
+}

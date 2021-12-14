@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.Fournisseur;
 import sn.ssi.sigmap.repository.FournisseurRepository;
 
@@ -23,13 +24,14 @@ import java.util.List;
 import static sn.ssi.sigmap.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link FournisseurResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class FournisseurResourceIT {
@@ -121,7 +123,7 @@ public class FournisseurResourceIT {
     public void createFournisseur() throws Exception {
         int databaseSizeBeforeCreate = fournisseurRepository.findAll().size();
         // Create the Fournisseur
-        restFournisseurMockMvc.perform(post("/api/fournisseurs")
+        restFournisseurMockMvc.perform(post("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isCreated());
@@ -150,7 +152,7 @@ public class FournisseurResourceIT {
         fournisseur.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restFournisseurMockMvc.perform(post("/api/fournisseurs")
+        restFournisseurMockMvc.perform(post("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isBadRequest());
@@ -171,7 +173,7 @@ public class FournisseurResourceIT {
         // Create the Fournisseur, which fails.
 
 
-        restFournisseurMockMvc.perform(post("/api/fournisseurs")
+        restFournisseurMockMvc.perform(post("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isBadRequest());
@@ -190,7 +192,7 @@ public class FournisseurResourceIT {
         // Create the Fournisseur, which fails.
 
 
-        restFournisseurMockMvc.perform(post("/api/fournisseurs")
+        restFournisseurMockMvc.perform(post("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isBadRequest());
@@ -209,7 +211,7 @@ public class FournisseurResourceIT {
         // Create the Fournisseur, which fails.
 
 
-        restFournisseurMockMvc.perform(post("/api/fournisseurs")
+        restFournisseurMockMvc.perform(post("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isBadRequest());
@@ -228,7 +230,7 @@ public class FournisseurResourceIT {
         // Create the Fournisseur, which fails.
 
 
-        restFournisseurMockMvc.perform(post("/api/fournisseurs")
+        restFournisseurMockMvc.perform(post("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isBadRequest());
@@ -247,7 +249,7 @@ public class FournisseurResourceIT {
         // Create the Fournisseur, which fails.
 
 
-        restFournisseurMockMvc.perform(post("/api/fournisseurs")
+        restFournisseurMockMvc.perform(post("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isBadRequest());
@@ -330,7 +332,7 @@ public class FournisseurResourceIT {
             .sigle(UPDATED_SIGLE)
             .numeroIdentiteFiscale(UPDATED_NUMERO_IDENTITE_FISCALE);
 
-        restFournisseurMockMvc.perform(put("/api/fournisseurs")
+        restFournisseurMockMvc.perform(put("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedFournisseur)))
             .andExpect(status().isOk());
@@ -356,7 +358,7 @@ public class FournisseurResourceIT {
         int databaseSizeBeforeUpdate = fournisseurRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restFournisseurMockMvc.perform(put("/api/fournisseurs")
+        restFournisseurMockMvc.perform(put("/api/fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(fournisseur)))
             .andExpect(status().isBadRequest());
@@ -375,7 +377,7 @@ public class FournisseurResourceIT {
         int databaseSizeBeforeDelete = fournisseurRepository.findAll().size();
 
         // Delete the fournisseur
-        restFournisseurMockMvc.perform(delete("/api/fournisseurs/{id}", fournisseur.getId())
+        restFournisseurMockMvc.perform(delete("/api/fournisseurs/{id}", fournisseur.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

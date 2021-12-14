@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.Categories;
 import sn.ssi.sigmap.repository.CategoriesRepository;
 
@@ -18,13 +19,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link CategoriesResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class CategoriesResourceIT {
@@ -86,7 +88,7 @@ public class CategoriesResourceIT {
     public void createCategories() throws Exception {
         int databaseSizeBeforeCreate = categoriesRepository.findAll().size();
         // Create the Categories
-        restCategoriesMockMvc.perform(post("/api/categories")
+        restCategoriesMockMvc.perform(post("/api/categories").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categories)))
             .andExpect(status().isCreated());
@@ -109,7 +111,7 @@ public class CategoriesResourceIT {
         categories.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restCategoriesMockMvc.perform(post("/api/categories")
+        restCategoriesMockMvc.perform(post("/api/categories").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categories)))
             .andExpect(status().isBadRequest());
@@ -130,7 +132,7 @@ public class CategoriesResourceIT {
         // Create the Categories, which fails.
 
 
-        restCategoriesMockMvc.perform(post("/api/categories")
+        restCategoriesMockMvc.perform(post("/api/categories").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categories)))
             .andExpect(status().isBadRequest());
@@ -149,7 +151,7 @@ public class CategoriesResourceIT {
         // Create the Categories, which fails.
 
 
-        restCategoriesMockMvc.perform(post("/api/categories")
+        restCategoriesMockMvc.perform(post("/api/categories").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categories)))
             .andExpect(status().isBadRequest());
@@ -214,7 +216,7 @@ public class CategoriesResourceIT {
             .designation(UPDATED_DESIGNATION)
             .commentaire(UPDATED_COMMENTAIRE);
 
-        restCategoriesMockMvc.perform(put("/api/categories")
+        restCategoriesMockMvc.perform(put("/api/categories").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedCategories)))
             .andExpect(status().isOk());
@@ -234,7 +236,7 @@ public class CategoriesResourceIT {
         int databaseSizeBeforeUpdate = categoriesRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restCategoriesMockMvc.perform(put("/api/categories")
+        restCategoriesMockMvc.perform(put("/api/categories").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categories)))
             .andExpect(status().isBadRequest());
@@ -253,7 +255,7 @@ public class CategoriesResourceIT {
         int databaseSizeBeforeDelete = categoriesRepository.findAll().size();
 
         // Delete the categories
-        restCategoriesMockMvc.perform(delete("/api/categories/{id}", categories.getId())
+        restCategoriesMockMvc.perform(delete("/api/categories/{id}", categories.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

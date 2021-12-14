@@ -1,366 +1,207 @@
 package sn.ssi.sigmap.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
+import sn.ssi.sigmap.domain.Departement;
+import sn.ssi.sigmap.repository.DepartementRepository;
 
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import javax.persistence.EntityManager;
+import java.util.List;
 
-import sn.ssi.sigmap.domain.Departement;
-import sn.ssi.sigmap.repository.DepartementRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link DepartementResource} REST controller.
  */
-
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
-class DepartementResourceIT {
+public class DepartementResourceIT {
 
-  private static final String DEFAULT_LIBELLE = "AAAAAAAAAA";
-  private static final String UPDATED_LIBELLE = "BBBBBBBBBB";
+    private static final String DEFAULT_LIBELLE = "AAAAAAAAAA";
+    private static final String UPDATED_LIBELLE = "BBBBBBBBBB";
 
-  private static final String ENTITY_API_URL = "/api/departements";
-  private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+    @Autowired
+    private DepartementRepository departementRepository;
 
-  private static Random random = new Random();
-  private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    @Autowired
+    private EntityManager em;
 
-  @Autowired
-  private DepartementRepository departementRepository;
+    @Autowired
+    private MockMvc restDepartementMockMvc;
 
-  @Autowired
-  private EntityManager em;
+    private Departement departement;
 
-  @Autowired
-  private MockMvc restDepartementMockMvc;
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Departement createEntity(EntityManager em) {
+        Departement departement = new Departement();
+        departement.setLibelle(DEFAULT_LIBELLE);
+        return departement;
+    }
+    /**
+     * Create an updated entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Departement createUpdatedEntity(EntityManager em) {
+        Departement departement = new Departement();
+        departement.setLibelle(UPDATED_LIBELLE);
+        return departement;
+    }
 
-  private Departement departement;
+    @BeforeEach
+    public void initTest() {
+        departement = createEntity(em);
+    }
 
-  /**
-   * Create an entity for this test.
-   *
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static Departement createEntity(EntityManager em) {
-    Departement departement = new Departement().libelle(DEFAULT_LIBELLE);
-    return departement;
-  }
+    @Test
+    @Transactional
+    public void createDepartement() throws Exception {
+        int databaseSizeBeforeCreate = departementRepository.findAll().size();
+        // Create the Departement
+        restDepartementMockMvc.perform(post("/api/departements").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(departement)))
+            .andExpect(status().isCreated());
 
-  /**
-   * Create an updated entity for this test.
-   *
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static Departement createUpdatedEntity(EntityManager em) {
-    Departement departement = new Departement().libelle(UPDATED_LIBELLE);
-    return departement;
-  }
+        // Validate the Departement in the database
+        List<Departement> departementList = departementRepository.findAll();
+        assertThat(departementList).hasSize(databaseSizeBeforeCreate + 1);
+        Departement testDepartement = departementList.get(departementList.size() - 1);
+        assertThat(testDepartement.getLibelle()).isEqualTo(DEFAULT_LIBELLE);
+    }
 
-  @BeforeEach
-  public void initTest() {
-    departement = createEntity(em);
-  }
+    @Test
+    @Transactional
+    public void createDepartementWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = departementRepository.findAll().size();
 
-  @Test
-  @Transactional
-  void createDepartement() throws Exception {
-    int databaseSizeBeforeCreate = departementRepository.findAll().size();
-    // Create the Departement
-    restDepartementMockMvc
-      .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(departement)))
-      .andExpect(status().isCreated());
+        // Create the Departement with an existing ID
+        departement.setId(1L);
 
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeCreate + 1);
-    Departement testDepartement = departementList.get(departementList.size() - 1);
-    assertThat(testDepartement.getLibelle()).isEqualTo(DEFAULT_LIBELLE);
-  }
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restDepartementMockMvc.perform(post("/api/departements").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(departement)))
+            .andExpect(status().isBadRequest());
 
-  @Test
-  @Transactional
-  void createDepartementWithExistingId() throws Exception {
-    // Create the Departement with an existing ID
-    departement.setId(1L);
+        // Validate the Departement in the database
+        List<Departement> departementList = departementRepository.findAll();
+        assertThat(departementList).hasSize(databaseSizeBeforeCreate);
+    }
 
-    int databaseSizeBeforeCreate = departementRepository.findAll().size();
 
-    // An entity with an existing ID cannot be created, so this API call must fail
-    restDepartementMockMvc
-      .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(departement)))
-      .andExpect(status().isBadRequest());
+    @Test
+    @Transactional
+    public void getAllDepartements() throws Exception {
+        // Initialize the database
+        departementRepository.saveAndFlush(departement);
 
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeCreate);
-  }
+        // Get all the departementList
+        restDepartementMockMvc.perform(get("/api/departements?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(departement.getId().intValue())))
+            .andExpect(jsonPath("$.[*].libelle").value(hasItem(DEFAULT_LIBELLE)));
+    }
+    
+    @Test
+    @Transactional
+    public void getDepartement() throws Exception {
+        // Initialize the database
+        departementRepository.saveAndFlush(departement);
 
-  @Test
-  @Transactional
-  void getAllDepartements() throws Exception {
-    // Initialize the database
-    departementRepository.saveAndFlush(departement);
+        // Get the departement
+        restDepartementMockMvc.perform(get("/api/departements/{id}", departement.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id").value(departement.getId().intValue()))
+            .andExpect(jsonPath("$.libelle").value(DEFAULT_LIBELLE));
+    }
+    @Test
+    @Transactional
+    public void getNonExistingDepartement() throws Exception {
+        // Get the departement
+        restDepartementMockMvc.perform(get("/api/departements/{id}", Long.MAX_VALUE))
+            .andExpect(status().isNotFound());
+    }
 
-    // Get all the departementList
-    restDepartementMockMvc
-      .perform(get(ENTITY_API_URL + "?sort=id,desc"))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(jsonPath("$.[*].id").value(hasItem(departement.getId().intValue())))
-      .andExpect(jsonPath("$.[*].libelle").value(hasItem(DEFAULT_LIBELLE)));
-  }
+    @Test
+    @Transactional
+    public void updateDepartement() throws Exception {
+        // Initialize the database
+        departementRepository.saveAndFlush(departement);
 
-  @Test
-  @Transactional
-  void getDepartement() throws Exception {
-    // Initialize the database
-    departementRepository.saveAndFlush(departement);
+        int databaseSizeBeforeUpdate = departementRepository.findAll().size();
 
-    // Get the departement
-    restDepartementMockMvc
-      .perform(get(ENTITY_API_URL_ID, departement.getId()))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(jsonPath("$.id").value(departement.getId().intValue()))
-      .andExpect(jsonPath("$.libelle").value(DEFAULT_LIBELLE));
-  }
+        // Update the departement
+        Departement updatedDepartement = departementRepository.findById(departement.getId()).get();
+        // Disconnect from session so that the updates on updatedDepartement are not directly saved in db
+        em.detach(updatedDepartement);
+        updatedDepartement.setLibelle(UPDATED_LIBELLE);
 
-  @Test
-  @Transactional
-  void getNonExistingDepartement() throws Exception {
-    // Get the departement
-    restDepartementMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
-  }
+        restDepartementMockMvc.perform(put("/api/departements").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(updatedDepartement)))
+            .andExpect(status().isOk());
 
-  @Test
-  @Transactional
-  void putNewDepartement() throws Exception {
-    // Initialize the database
-    departementRepository.saveAndFlush(departement);
+        // Validate the Departement in the database
+        List<Departement> departementList = departementRepository.findAll();
+        assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
+        Departement testDepartement = departementList.get(departementList.size() - 1);
+        assertThat(testDepartement.getLibelle()).isEqualTo(UPDATED_LIBELLE);
+    }
 
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
+    @Test
+    @Transactional
+    public void updateNonExistingDepartement() throws Exception {
+        int databaseSizeBeforeUpdate = departementRepository.findAll().size();
 
-    // Update the departement
-    Departement updatedDepartement = departementRepository.findById(departement.getId()).get();
-    // Disconnect from session so that the updates on updatedDepartement are not directly saved in db
-    em.detach(updatedDepartement);
-    updatedDepartement.libelle(UPDATED_LIBELLE);
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        restDepartementMockMvc.perform(put("/api/departements").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(departement)))
+            .andExpect(status().isBadRequest());
 
-    restDepartementMockMvc
-      .perform(
-        put(ENTITY_API_URL_ID, updatedDepartement.getId())
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(TestUtil.convertObjectToJsonBytes(updatedDepartement))
-      )
-      .andExpect(status().isOk());
+        // Validate the Departement in the database
+        List<Departement> departementList = departementRepository.findAll();
+        assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
+    }
 
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-    Departement testDepartement = departementList.get(departementList.size() - 1);
-    assertThat(testDepartement.getLibelle()).isEqualTo(UPDATED_LIBELLE);
-  }
+    @Test
+    @Transactional
+    public void deleteDepartement() throws Exception {
+        // Initialize the database
+        departementRepository.saveAndFlush(departement);
 
-  @Test
-  @Transactional
-  void putNonExistingDepartement() throws Exception {
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-    departement.setId(count.incrementAndGet());
+        int databaseSizeBeforeDelete = departementRepository.findAll().size();
 
-    // If the entity doesn't have an ID, it will throw BadRequestAlertException
-    restDepartementMockMvc
-      .perform(
-        put(ENTITY_API_URL_ID, departement.getId())
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(TestUtil.convertObjectToJsonBytes(departement))
-      )
-      .andExpect(status().isBadRequest());
+        // Delete the departement
+        restDepartementMockMvc.perform(delete("/api/departements/{id}", departement.getId()).with(csrf())
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
 
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void putWithIdMismatchDepartement() throws Exception {
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-    departement.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restDepartementMockMvc
-      .perform(
-        put(ENTITY_API_URL_ID, count.incrementAndGet())
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(TestUtil.convertObjectToJsonBytes(departement))
-      )
-      .andExpect(status().isBadRequest());
-
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void putWithMissingIdPathParamDepartement() throws Exception {
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-    departement.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restDepartementMockMvc
-      .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(departement)))
-      .andExpect(status().isMethodNotAllowed());
-
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void partialUpdateDepartementWithPatch() throws Exception {
-    // Initialize the database
-    departementRepository.saveAndFlush(departement);
-
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-
-    // Update the departement using partial update
-    Departement partialUpdatedDepartement = new Departement();
-    partialUpdatedDepartement.setId(departement.getId());
-
-    partialUpdatedDepartement.libelle(UPDATED_LIBELLE);
-
-    restDepartementMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, partialUpdatedDepartement.getId())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(partialUpdatedDepartement))
-      )
-      .andExpect(status().isOk());
-
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-    Departement testDepartement = departementList.get(departementList.size() - 1);
-    assertThat(testDepartement.getLibelle()).isEqualTo(UPDATED_LIBELLE);
-  }
-
-  @Test
-  @Transactional
-  void fullUpdateDepartementWithPatch() throws Exception {
-    // Initialize the database
-    departementRepository.saveAndFlush(departement);
-
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-
-    // Update the departement using partial update
-    Departement partialUpdatedDepartement = new Departement();
-    partialUpdatedDepartement.setId(departement.getId());
-
-    partialUpdatedDepartement.libelle(UPDATED_LIBELLE);
-
-    restDepartementMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, partialUpdatedDepartement.getId())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(partialUpdatedDepartement))
-      )
-      .andExpect(status().isOk());
-
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-    Departement testDepartement = departementList.get(departementList.size() - 1);
-    assertThat(testDepartement.getLibelle()).isEqualTo(UPDATED_LIBELLE);
-  }
-
-  @Test
-  @Transactional
-  void patchNonExistingDepartement() throws Exception {
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-    departement.setId(count.incrementAndGet());
-
-    // If the entity doesn't have an ID, it will throw BadRequestAlertException
-    restDepartementMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, departement.getId())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(departement))
-      )
-      .andExpect(status().isBadRequest());
-
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void patchWithIdMismatchDepartement() throws Exception {
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-    departement.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restDepartementMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, count.incrementAndGet())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(departement))
-      )
-      .andExpect(status().isBadRequest());
-
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void patchWithMissingIdPathParamDepartement() throws Exception {
-    int databaseSizeBeforeUpdate = departementRepository.findAll().size();
-    departement.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restDepartementMockMvc
-      .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(departement)))
-      .andExpect(status().isMethodNotAllowed());
-
-    // Validate the Departement in the database
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void deleteDepartement() throws Exception {
-    // Initialize the database
-    departementRepository.saveAndFlush(departement);
-
-    int databaseSizeBeforeDelete = departementRepository.findAll().size();
-
-    // Delete the departement
-    restDepartementMockMvc
-      .perform(delete(ENTITY_API_URL_ID, departement.getId()).accept(MediaType.APPLICATION_JSON))
-      .andExpect(status().isNoContent());
-
-    // Validate the database contains one less item
-    List<Departement> departementList = departementRepository.findAll();
-    assertThat(departementList).hasSize(databaseSizeBeforeDelete - 1);
-  }
+        // Validate the database contains one less item
+        List<Departement> departementList = departementRepository.findAll();
+        assertThat(departementList).hasSize(databaseSizeBeforeDelete - 1);
+    }
 }

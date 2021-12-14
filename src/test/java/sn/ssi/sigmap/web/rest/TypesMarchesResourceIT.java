@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.TypesMarches;
 import sn.ssi.sigmap.repository.TypesMarchesRepository;
 
@@ -18,13 +19,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link TypesMarchesResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class TypesMarchesResourceIT {
@@ -86,7 +88,7 @@ public class TypesMarchesResourceIT {
     public void createTypesMarches() throws Exception {
         int databaseSizeBeforeCreate = typesMarchesRepository.findAll().size();
         // Create the TypesMarches
-        restTypesMarchesMockMvc.perform(post("/api/types-marches")
+        restTypesMarchesMockMvc.perform(post("/api/types-marches").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(typesMarches)))
             .andExpect(status().isCreated());
@@ -109,7 +111,7 @@ public class TypesMarchesResourceIT {
         typesMarches.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restTypesMarchesMockMvc.perform(post("/api/types-marches")
+        restTypesMarchesMockMvc.perform(post("/api/types-marches").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(typesMarches)))
             .andExpect(status().isBadRequest());
@@ -130,7 +132,7 @@ public class TypesMarchesResourceIT {
         // Create the TypesMarches, which fails.
 
 
-        restTypesMarchesMockMvc.perform(post("/api/types-marches")
+        restTypesMarchesMockMvc.perform(post("/api/types-marches").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(typesMarches)))
             .andExpect(status().isBadRequest());
@@ -149,7 +151,7 @@ public class TypesMarchesResourceIT {
         // Create the TypesMarches, which fails.
 
 
-        restTypesMarchesMockMvc.perform(post("/api/types-marches")
+        restTypesMarchesMockMvc.perform(post("/api/types-marches").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(typesMarches)))
             .andExpect(status().isBadRequest());
@@ -168,7 +170,7 @@ public class TypesMarchesResourceIT {
         // Create the TypesMarches, which fails.
 
 
-        restTypesMarchesMockMvc.perform(post("/api/types-marches")
+        restTypesMarchesMockMvc.perform(post("/api/types-marches").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(typesMarches)))
             .andExpect(status().isBadRequest());
@@ -233,7 +235,7 @@ public class TypesMarchesResourceIT {
             .libelle(UPDATED_LIBELLE)
             .description(UPDATED_DESCRIPTION);
 
-        restTypesMarchesMockMvc.perform(put("/api/types-marches")
+        restTypesMarchesMockMvc.perform(put("/api/types-marches").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedTypesMarches)))
             .andExpect(status().isOk());
@@ -253,7 +255,7 @@ public class TypesMarchesResourceIT {
         int databaseSizeBeforeUpdate = typesMarchesRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restTypesMarchesMockMvc.perform(put("/api/types-marches")
+        restTypesMarchesMockMvc.perform(put("/api/types-marches").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(typesMarches)))
             .andExpect(status().isBadRequest());
@@ -272,7 +274,7 @@ public class TypesMarchesResourceIT {
         int databaseSizeBeforeDelete = typesMarchesRepository.findAll().size();
 
         // Delete the typesMarches
-        restTypesMarchesMockMvc.perform(delete("/api/types-marches/{id}", typesMarches.getId())
+        restTypesMarchesMockMvc.perform(delete("/api/types-marches/{id}", typesMarches.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

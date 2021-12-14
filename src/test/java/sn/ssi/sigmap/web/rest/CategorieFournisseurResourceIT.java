@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.CategorieFournisseur;
 import sn.ssi.sigmap.repository.CategorieFournisseurRepository;
 
@@ -18,13 +19,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link CategorieFournisseurResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class CategorieFournisseurResourceIT {
@@ -81,7 +83,7 @@ public class CategorieFournisseurResourceIT {
     public void createCategorieFournisseur() throws Exception {
         int databaseSizeBeforeCreate = categorieFournisseurRepository.findAll().size();
         // Create the CategorieFournisseur
-        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs")
+        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categorieFournisseur)))
             .andExpect(status().isCreated());
@@ -103,7 +105,7 @@ public class CategorieFournisseurResourceIT {
         categorieFournisseur.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs")
+        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categorieFournisseur)))
             .andExpect(status().isBadRequest());
@@ -124,7 +126,7 @@ public class CategorieFournisseurResourceIT {
         // Create the CategorieFournisseur, which fails.
 
 
-        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs")
+        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categorieFournisseur)))
             .andExpect(status().isBadRequest());
@@ -143,7 +145,7 @@ public class CategorieFournisseurResourceIT {
         // Create the CategorieFournisseur, which fails.
 
 
-        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs")
+        restCategorieFournisseurMockMvc.perform(post("/api/categorie-fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categorieFournisseur)))
             .andExpect(status().isBadRequest());
@@ -205,7 +207,7 @@ public class CategorieFournisseurResourceIT {
             .libelle(UPDATED_LIBELLE)
             .description(UPDATED_DESCRIPTION);
 
-        restCategorieFournisseurMockMvc.perform(put("/api/categorie-fournisseurs")
+        restCategorieFournisseurMockMvc.perform(put("/api/categorie-fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedCategorieFournisseur)))
             .andExpect(status().isOk());
@@ -224,7 +226,7 @@ public class CategorieFournisseurResourceIT {
         int databaseSizeBeforeUpdate = categorieFournisseurRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restCategorieFournisseurMockMvc.perform(put("/api/categorie-fournisseurs")
+        restCategorieFournisseurMockMvc.perform(put("/api/categorie-fournisseurs").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(categorieFournisseur)))
             .andExpect(status().isBadRequest());
@@ -243,7 +245,7 @@ public class CategorieFournisseurResourceIT {
         int databaseSizeBeforeDelete = categorieFournisseurRepository.findAll().size();
 
         // Delete the categorieFournisseur
-        restCategorieFournisseurMockMvc.perform(delete("/api/categorie-fournisseurs/{id}", categorieFournisseur.getId())
+        restCategorieFournisseurMockMvc.perform(delete("/api/categorie-fournisseurs/{id}", categorieFournisseur.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

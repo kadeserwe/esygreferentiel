@@ -44,6 +44,9 @@ public class SygAutoriteContractante implements Serializable {
     @Column(name = "telephone", nullable = false)
     private String telephone;
 
+    @Column(name = "fax")
+    private String fax;
+
     @NotNull
     @Column(name = "email", nullable = false)
     private String email;
@@ -144,6 +147,18 @@ public class SygAutoriteContractante implements Serializable {
         this.telephone = telephone;
     }
 
+    public String getFax() {
+        return fax;
+    }
+
+    public SygAutoriteContractante fax(String fax) {
+        this.fax = fax;
+        return this;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
 
     public String getEmail() {
         return email;
@@ -263,6 +278,7 @@ public class SygAutoriteContractante implements Serializable {
             ", responsable='" + getResponsable() + "'" +
             ", adresse='" + getAdresse() + "'" +
             ", telephone='" + getTelephone() + "'" +
+            ", fax='" + getFax() + "'" +
             ", email='" + getEmail() + "'" +
             ", sigle='" + getSigle() + "'" +
             ", urlsiteweb='" + getUrlsiteweb() + "'" +

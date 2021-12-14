@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.JoursFeries;
 import sn.ssi.sigmap.repository.JoursFeriesRepository;
 
@@ -20,13 +21,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link JoursFeriesResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class JoursFeriesResourceIT {
@@ -83,7 +85,7 @@ public class JoursFeriesResourceIT {
     public void createJoursFeries() throws Exception {
         int databaseSizeBeforeCreate = joursFeriesRepository.findAll().size();
         // Create the JoursFeries
-        restJoursFeriesMockMvc.perform(post("/api/jours-feries")
+        restJoursFeriesMockMvc.perform(post("/api/jours-feries").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(joursFeries)))
             .andExpect(status().isCreated());
@@ -105,7 +107,7 @@ public class JoursFeriesResourceIT {
         joursFeries.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restJoursFeriesMockMvc.perform(post("/api/jours-feries")
+        restJoursFeriesMockMvc.perform(post("/api/jours-feries").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(joursFeries)))
             .andExpect(status().isBadRequest());
@@ -126,7 +128,7 @@ public class JoursFeriesResourceIT {
         // Create the JoursFeries, which fails.
 
 
-        restJoursFeriesMockMvc.perform(post("/api/jours-feries")
+        restJoursFeriesMockMvc.perform(post("/api/jours-feries").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(joursFeries)))
             .andExpect(status().isBadRequest());
@@ -188,7 +190,7 @@ public class JoursFeriesResourceIT {
             .date(UPDATED_DATE)
             .description(UPDATED_DESCRIPTION);
 
-        restJoursFeriesMockMvc.perform(put("/api/jours-feries")
+        restJoursFeriesMockMvc.perform(put("/api/jours-feries").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedJoursFeries)))
             .andExpect(status().isOk());
@@ -207,7 +209,7 @@ public class JoursFeriesResourceIT {
         int databaseSizeBeforeUpdate = joursFeriesRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restJoursFeriesMockMvc.perform(put("/api/jours-feries")
+        restJoursFeriesMockMvc.perform(put("/api/jours-feries").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(joursFeries)))
             .andExpect(status().isBadRequest());
@@ -226,7 +228,7 @@ public class JoursFeriesResourceIT {
         int databaseSizeBeforeDelete = joursFeriesRepository.findAll().size();
 
         // Delete the joursFeries
-        restJoursFeriesMockMvc.perform(delete("/api/jours-feries/{id}", joursFeries.getId())
+        restJoursFeriesMockMvc.perform(delete("/api/jours-feries/{id}", joursFeries.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

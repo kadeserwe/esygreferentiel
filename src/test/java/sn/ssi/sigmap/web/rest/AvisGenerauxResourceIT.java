@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.AvisGeneraux;
 import sn.ssi.sigmap.repository.AvisGenerauxRepository;
 
@@ -21,13 +22,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link AvisGenerauxResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class AvisGenerauxResourceIT {
@@ -118,7 +120,7 @@ public class AvisGenerauxResourceIT {
     public void createAvisGeneraux() throws Exception {
         int databaseSizeBeforeCreate = avisGenerauxRepository.findAll().size();
         // Create the AvisGeneraux
-        restAvisGenerauxMockMvc.perform(post("/api/avis-generauxes")
+        restAvisGenerauxMockMvc.perform(post("/api/avis-generauxes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(avisGeneraux)))
             .andExpect(status().isCreated());
@@ -147,7 +149,7 @@ public class AvisGenerauxResourceIT {
         avisGeneraux.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restAvisGenerauxMockMvc.perform(post("/api/avis-generauxes")
+        restAvisGenerauxMockMvc.perform(post("/api/avis-generauxes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(avisGeneraux)))
             .andExpect(status().isBadRequest());
@@ -232,7 +234,7 @@ public class AvisGenerauxResourceIT {
             .etat(UPDATED_ETAT)
             .datePublication(UPDATED_DATE_PUBLICATION);
 
-        restAvisGenerauxMockMvc.perform(put("/api/avis-generauxes")
+        restAvisGenerauxMockMvc.perform(put("/api/avis-generauxes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedAvisGeneraux)))
             .andExpect(status().isOk());
@@ -258,7 +260,7 @@ public class AvisGenerauxResourceIT {
         int databaseSizeBeforeUpdate = avisGenerauxRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restAvisGenerauxMockMvc.perform(put("/api/avis-generauxes")
+        restAvisGenerauxMockMvc.perform(put("/api/avis-generauxes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(avisGeneraux)))
             .andExpect(status().isBadRequest());
@@ -277,7 +279,7 @@ public class AvisGenerauxResourceIT {
         int databaseSizeBeforeDelete = avisGenerauxRepository.findAll().size();
 
         // Delete the avisGeneraux
-        restAvisGenerauxMockMvc.perform(delete("/api/avis-generauxes/{id}", avisGeneraux.getId())
+        restAvisGenerauxMockMvc.perform(delete("/api/avis-generauxes/{id}", avisGeneraux.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

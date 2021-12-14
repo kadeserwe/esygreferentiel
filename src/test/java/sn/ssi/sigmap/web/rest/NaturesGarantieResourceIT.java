@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.NaturesGarantie;
 import sn.ssi.sigmap.repository.NaturesGarantieRepository;
 
@@ -18,13 +19,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link NaturesGarantieResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class NaturesGarantieResourceIT {
@@ -76,7 +78,7 @@ public class NaturesGarantieResourceIT {
     public void createNaturesGarantie() throws Exception {
         int databaseSizeBeforeCreate = naturesGarantieRepository.findAll().size();
         // Create the NaturesGarantie
-        restNaturesGarantieMockMvc.perform(post("/api/natures-garanties")
+        restNaturesGarantieMockMvc.perform(post("/api/natures-garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(naturesGarantie)))
             .andExpect(status().isCreated());
@@ -97,7 +99,7 @@ public class NaturesGarantieResourceIT {
         naturesGarantie.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restNaturesGarantieMockMvc.perform(post("/api/natures-garanties")
+        restNaturesGarantieMockMvc.perform(post("/api/natures-garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(naturesGarantie)))
             .andExpect(status().isBadRequest());
@@ -118,7 +120,7 @@ public class NaturesGarantieResourceIT {
         // Create the NaturesGarantie, which fails.
 
 
-        restNaturesGarantieMockMvc.perform(post("/api/natures-garanties")
+        restNaturesGarantieMockMvc.perform(post("/api/natures-garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(naturesGarantie)))
             .andExpect(status().isBadRequest());
@@ -177,7 +179,7 @@ public class NaturesGarantieResourceIT {
         updatedNaturesGarantie
             .libelle(UPDATED_LIBELLE);
 
-        restNaturesGarantieMockMvc.perform(put("/api/natures-garanties")
+        restNaturesGarantieMockMvc.perform(put("/api/natures-garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedNaturesGarantie)))
             .andExpect(status().isOk());
@@ -195,7 +197,7 @@ public class NaturesGarantieResourceIT {
         int databaseSizeBeforeUpdate = naturesGarantieRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restNaturesGarantieMockMvc.perform(put("/api/natures-garanties")
+        restNaturesGarantieMockMvc.perform(put("/api/natures-garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(naturesGarantie)))
             .andExpect(status().isBadRequest());
@@ -214,7 +216,7 @@ public class NaturesGarantieResourceIT {
         int databaseSizeBeforeDelete = naturesGarantieRepository.findAll().size();
 
         // Delete the naturesGarantie
-        restNaturesGarantieMockMvc.perform(delete("/api/natures-garanties/{id}", naturesGarantie.getId())
+        restNaturesGarantieMockMvc.perform(delete("/api/natures-garanties/{id}", naturesGarantie.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

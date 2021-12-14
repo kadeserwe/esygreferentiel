@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.Garantie;
 import sn.ssi.sigmap.repository.GarantieRepository;
 
@@ -18,13 +19,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link GarantieResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class GarantieResourceIT {
@@ -86,7 +88,7 @@ public class GarantieResourceIT {
     public void createGarantie() throws Exception {
         int databaseSizeBeforeCreate = garantieRepository.findAll().size();
         // Create the Garantie
-        restGarantieMockMvc.perform(post("/api/garanties")
+        restGarantieMockMvc.perform(post("/api/garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(garantie)))
             .andExpect(status().isCreated());
@@ -109,7 +111,7 @@ public class GarantieResourceIT {
         garantie.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restGarantieMockMvc.perform(post("/api/garanties")
+        restGarantieMockMvc.perform(post("/api/garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(garantie)))
             .andExpect(status().isBadRequest());
@@ -130,7 +132,7 @@ public class GarantieResourceIT {
         // Create the Garantie, which fails.
 
 
-        restGarantieMockMvc.perform(post("/api/garanties")
+        restGarantieMockMvc.perform(post("/api/garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(garantie)))
             .andExpect(status().isBadRequest());
@@ -149,7 +151,7 @@ public class GarantieResourceIT {
         // Create the Garantie, which fails.
 
 
-        restGarantieMockMvc.perform(post("/api/garanties")
+        restGarantieMockMvc.perform(post("/api/garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(garantie)))
             .andExpect(status().isBadRequest());
@@ -214,7 +216,7 @@ public class GarantieResourceIT {
             .typeGarantie(UPDATED_TYPE_GARANTIE)
             .description(UPDATED_DESCRIPTION);
 
-        restGarantieMockMvc.perform(put("/api/garanties")
+        restGarantieMockMvc.perform(put("/api/garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedGarantie)))
             .andExpect(status().isOk());
@@ -234,7 +236,7 @@ public class GarantieResourceIT {
         int databaseSizeBeforeUpdate = garantieRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restGarantieMockMvc.perform(put("/api/garanties")
+        restGarantieMockMvc.perform(put("/api/garanties").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(garantie)))
             .andExpect(status().isBadRequest());
@@ -253,7 +255,7 @@ public class GarantieResourceIT {
         int databaseSizeBeforeDelete = garantieRepository.findAll().size();
 
         // Delete the garantie
-        restGarantieMockMvc.perform(delete("/api/garanties/{id}", garantie.getId())
+        restGarantieMockMvc.perform(delete("/api/garanties/{id}", garantie.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

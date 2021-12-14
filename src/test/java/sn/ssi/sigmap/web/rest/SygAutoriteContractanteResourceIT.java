@@ -1,6 +1,7 @@
 package sn.ssi.sigmap.web.rest;
 
 import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
 import sn.ssi.sigmap.domain.SygAutoriteContractante;
 import sn.ssi.sigmap.domain.TypeAutoriteContractante;
 import sn.ssi.sigmap.repository.SygAutoriteContractanteRepository;
@@ -20,13 +21,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link SygAutoriteContractanteResource} REST controller.
  */
-@SpringBootTest(classes = ReferentielmsApp.class)
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class SygAutoriteContractanteResourceIT {
@@ -90,6 +92,7 @@ public class SygAutoriteContractanteResourceIT {
             .responsable(DEFAULT_RESPONSABLE)
             .adresse(DEFAULT_ADRESSE)
             .telephone(DEFAULT_TELEPHONE)
+            .fax(DEFAULT_FAX)
             .email(DEFAULT_EMAIL)
             .sigle(DEFAULT_SIGLE)
             .urlsiteweb(DEFAULT_URLSITEWEB)
@@ -121,6 +124,7 @@ public class SygAutoriteContractanteResourceIT {
             .responsable(UPDATED_RESPONSABLE)
             .adresse(UPDATED_ADRESSE)
             .telephone(UPDATED_TELEPHONE)
+            .fax(UPDATED_FAX)
             .email(UPDATED_EMAIL)
             .sigle(UPDATED_SIGLE)
             .urlsiteweb(UPDATED_URLSITEWEB)
@@ -150,7 +154,7 @@ public class SygAutoriteContractanteResourceIT {
     public void createSygAutoriteContractante() throws Exception {
         int databaseSizeBeforeCreate = sygAutoriteContractanteRepository.findAll().size();
         // Create the SygAutoriteContractante
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isCreated());
@@ -164,6 +168,7 @@ public class SygAutoriteContractanteResourceIT {
         assertThat(testSygAutoriteContractante.getResponsable()).isEqualTo(DEFAULT_RESPONSABLE);
         assertThat(testSygAutoriteContractante.getAdresse()).isEqualTo(DEFAULT_ADRESSE);
         assertThat(testSygAutoriteContractante.getTelephone()).isEqualTo(DEFAULT_TELEPHONE);
+        assertThat(testSygAutoriteContractante.getFax()).isEqualTo(DEFAULT_FAX);
         assertThat(testSygAutoriteContractante.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(testSygAutoriteContractante.getSigle()).isEqualTo(DEFAULT_SIGLE);
         assertThat(testSygAutoriteContractante.getUrlsiteweb()).isEqualTo(DEFAULT_URLSITEWEB);
@@ -181,7 +186,7 @@ public class SygAutoriteContractanteResourceIT {
         sygAutoriteContractante.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -202,7 +207,7 @@ public class SygAutoriteContractanteResourceIT {
         // Create the SygAutoriteContractante, which fails.
 
 
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -221,7 +226,7 @@ public class SygAutoriteContractanteResourceIT {
         // Create the SygAutoriteContractante, which fails.
 
 
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -240,7 +245,7 @@ public class SygAutoriteContractanteResourceIT {
         // Create the SygAutoriteContractante, which fails.
 
 
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -259,7 +264,7 @@ public class SygAutoriteContractanteResourceIT {
         // Create the SygAutoriteContractante, which fails.
 
 
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -278,7 +283,7 @@ public class SygAutoriteContractanteResourceIT {
         // Create the SygAutoriteContractante, which fails.
 
 
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -297,7 +302,7 @@ public class SygAutoriteContractanteResourceIT {
         // Create the SygAutoriteContractante, which fails.
 
 
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -316,7 +321,7 @@ public class SygAutoriteContractanteResourceIT {
         // Create the SygAutoriteContractante, which fails.
 
 
-        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(post("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -349,7 +354,7 @@ public class SygAutoriteContractanteResourceIT {
             .andExpect(jsonPath("$.[*].logoContentType").value(hasItem(DEFAULT_LOGO_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].logo").value(hasItem(Base64Utils.encodeToString(DEFAULT_LOGO))));
     }
-
+    
     @Test
     @Transactional
     public void getSygAutoriteContractante() throws Exception {
@@ -400,6 +405,7 @@ public class SygAutoriteContractanteResourceIT {
             .responsable(UPDATED_RESPONSABLE)
             .adresse(UPDATED_ADRESSE)
             .telephone(UPDATED_TELEPHONE)
+            .fax(UPDATED_FAX)
             .email(UPDATED_EMAIL)
             .sigle(UPDATED_SIGLE)
             .urlsiteweb(UPDATED_URLSITEWEB)
@@ -407,7 +413,7 @@ public class SygAutoriteContractanteResourceIT {
             .logo(UPDATED_LOGO)
             .logoContentType(UPDATED_LOGO_CONTENT_TYPE);
 
-        restSygAutoriteContractanteMockMvc.perform(put("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(put("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedSygAutoriteContractante)))
             .andExpect(status().isOk());
@@ -421,6 +427,7 @@ public class SygAutoriteContractanteResourceIT {
         assertThat(testSygAutoriteContractante.getResponsable()).isEqualTo(UPDATED_RESPONSABLE);
         assertThat(testSygAutoriteContractante.getAdresse()).isEqualTo(UPDATED_ADRESSE);
         assertThat(testSygAutoriteContractante.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
+        assertThat(testSygAutoriteContractante.getFax()).isEqualTo(UPDATED_FAX);
         assertThat(testSygAutoriteContractante.getEmail()).isEqualTo(UPDATED_EMAIL);
         assertThat(testSygAutoriteContractante.getSigle()).isEqualTo(UPDATED_SIGLE);
         assertThat(testSygAutoriteContractante.getUrlsiteweb()).isEqualTo(UPDATED_URLSITEWEB);
@@ -435,7 +442,7 @@ public class SygAutoriteContractanteResourceIT {
         int databaseSizeBeforeUpdate = sygAutoriteContractanteRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restSygAutoriteContractanteMockMvc.perform(put("/api/syg-autorite-contractantes")
+        restSygAutoriteContractanteMockMvc.perform(put("/api/syg-autorite-contractantes").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(sygAutoriteContractante)))
             .andExpect(status().isBadRequest());
@@ -454,7 +461,7 @@ public class SygAutoriteContractanteResourceIT {
         int databaseSizeBeforeDelete = sygAutoriteContractanteRepository.findAll().size();
 
         // Delete the sygAutoriteContractante
-        restSygAutoriteContractanteMockMvc.perform(delete("/api/syg-autorite-contractantes/{id}", sygAutoriteContractante.getId())
+        restSygAutoriteContractanteMockMvc.perform(delete("/api/syg-autorite-contractantes/{id}", sygAutoriteContractante.getId()).with(csrf())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

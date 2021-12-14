@@ -1,12 +1,14 @@
 package sn.ssi.sigmap.repository;
 
-import org.springframework.data.jpa.repository.*;
-import org.springframework.stereotype.Repository;
 import sn.ssi.sigmap.domain.Direction;
 
+import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
+
 /**
- * Spring Data SQL repository for the Direction entity.
+ * Spring Data  repository for the Direction entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DirectionRepository extends JpaRepository<Direction, Long> {}
+public interface DirectionRepository extends JpaRepository<Direction, Long> {
+}

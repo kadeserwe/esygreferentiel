@@ -75,8 +75,7 @@ public class CategoriesResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/categories")
-    public ResponseEntity<Categories> updateCategories(
-        @Valid @RequestBody Categories categories) throws URISyntaxException {
+    public ResponseEntity<Categories> updateCategories(@Valid @RequestBody Categories categories) throws URISyntaxException {
         log.debug("REST request to update Categories : {}", categories);
         if (categories.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

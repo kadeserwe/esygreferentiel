@@ -1,391 +1,226 @@
 package sn.ssi.sigmap.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import sn.ssi.sigmap.ReferentielmsApp;
+import sn.ssi.sigmap.config.TestSecurityConfiguration;
+import sn.ssi.sigmap.domain.SituationMatrimoniale;
+import sn.ssi.sigmap.repository.SituationMatrimonialeRepository;
 
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import javax.persistence.EntityManager;
+import java.util.List;
 
-import sn.ssi.sigmap.domain.SituationMatrimoniale;
-import sn.ssi.sigmap.repository.SituationMatrimonialeRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link SituationMatrimonialeResource} REST controller.
  */
-
+@SpringBootTest(classes = { ReferentielmsApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
-class SituationMatrimonialeResourceIT {
+public class SituationMatrimonialeResourceIT {
 
-  private static final String DEFAULT_LIBELLE = "AAAAAAAAAA";
-  private static final String UPDATED_LIBELLE = "BBBBBBBBBB";
+    private static final String DEFAULT_LIBELLE = "AAAAAAAAAA";
+    private static final String UPDATED_LIBELLE = "BBBBBBBBBB";
 
-  private static final String ENTITY_API_URL = "/api/situation-matrimoniales";
-  private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+    @Autowired
+    private SituationMatrimonialeRepository situationMatrimonialeRepository;
 
-  private static Random random = new Random();
-  private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    @Autowired
+    private EntityManager em;
 
-  @Autowired
-  private SituationMatrimonialeRepository situationMatrimonialeRepository;
+    @Autowired
+    private MockMvc restSituationMatrimonialeMockMvc;
 
-  @Autowired
-  private EntityManager em;
+    private SituationMatrimoniale situationMatrimoniale;
 
-  @Autowired
-  private MockMvc restSituationMatrimonialeMockMvc;
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static SituationMatrimoniale createEntity(EntityManager em) {
+        SituationMatrimoniale situationMatrimoniale = new SituationMatrimoniale();
+        situationMatrimoniale.setLibelle(DEFAULT_LIBELLE);
+        return situationMatrimoniale;
+    }
+    /**
+     * Create an updated entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static SituationMatrimoniale createUpdatedEntity(EntityManager em) {
+        SituationMatrimoniale situationMatrimoniale = new SituationMatrimoniale();
+        situationMatrimoniale.setLibelle(UPDATED_LIBELLE);
+        return situationMatrimoniale;
+    }
 
-  private SituationMatrimoniale situationMatrimoniale;
+    @BeforeEach
+    public void initTest() {
+        situationMatrimoniale = createEntity(em);
+    }
 
-  /**
-   * Create an entity for this test.
-   *
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static SituationMatrimoniale createEntity(EntityManager em) {
-    SituationMatrimoniale situationMatrimoniale = new SituationMatrimoniale().libelle(DEFAULT_LIBELLE);
-    return situationMatrimoniale;
-  }
+    @Test
+    @Transactional
+    public void createSituationMatrimoniale() throws Exception {
+        int databaseSizeBeforeCreate = situationMatrimonialeRepository.findAll().size();
+        // Create the SituationMatrimoniale
+        restSituationMatrimonialeMockMvc.perform(post("/api/situation-matrimoniales").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale)))
+            .andExpect(status().isCreated());
 
-  /**
-   * Create an updated entity for this test.
-   *
-   * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
-   */
-  public static SituationMatrimoniale createUpdatedEntity(EntityManager em) {
-    SituationMatrimoniale situationMatrimoniale = new SituationMatrimoniale().libelle(UPDATED_LIBELLE);
-    return situationMatrimoniale;
-  }
+        // Validate the SituationMatrimoniale in the database
+        List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
+        assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeCreate + 1);
+        SituationMatrimoniale testSituationMatrimoniale = situationMatrimonialeList.get(situationMatrimonialeList.size() - 1);
+        assertThat(testSituationMatrimoniale.getLibelle()).isEqualTo(DEFAULT_LIBELLE);
+    }
 
-  @BeforeEach
-  public void initTest() {
-    situationMatrimoniale = createEntity(em);
-  }
+    @Test
+    @Transactional
+    public void createSituationMatrimonialeWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = situationMatrimonialeRepository.findAll().size();
 
-  @Test
-  @Transactional
-  void createSituationMatrimoniale() throws Exception {
-    int databaseSizeBeforeCreate = situationMatrimonialeRepository.findAll().size();
-    // Create the SituationMatrimoniale
-    restSituationMatrimonialeMockMvc
-      .perform(
-        post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isCreated());
+        // Create the SituationMatrimoniale with an existing ID
+        situationMatrimoniale.setId(1L);
 
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeCreate + 1);
-    SituationMatrimoniale testSituationMatrimoniale = situationMatrimonialeList.get(situationMatrimonialeList.size() - 1);
-    assertThat(testSituationMatrimoniale.getLibelle()).isEqualTo(DEFAULT_LIBELLE);
-  }
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restSituationMatrimonialeMockMvc.perform(post("/api/situation-matrimoniales").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale)))
+            .andExpect(status().isBadRequest());
 
-  @Test
-  @Transactional
-  void createSituationMatrimonialeWithExistingId() throws Exception {
-    // Create the SituationMatrimoniale with an existing ID
-    situationMatrimoniale.setId(1L);
+        // Validate the SituationMatrimoniale in the database
+        List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
+        assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeCreate);
+    }
 
-    int databaseSizeBeforeCreate = situationMatrimonialeRepository.findAll().size();
 
-    // An entity with an existing ID cannot be created, so this API call must fail
-    restSituationMatrimonialeMockMvc
-      .perform(
-        post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isBadRequest());
+    @Test
+    @Transactional
+    public void checkLibelleIsRequired() throws Exception {
+        int databaseSizeBeforeTest = situationMatrimonialeRepository.findAll().size();
+        // set the field null
+        situationMatrimoniale.setLibelle(null);
 
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeCreate);
-  }
+        // Create the SituationMatrimoniale, which fails.
 
-  @Test
-  @Transactional
-  void checkLibelleIsRequired() throws Exception {
-    int databaseSizeBeforeTest = situationMatrimonialeRepository.findAll().size();
-    // set the field null
-    situationMatrimoniale.setLibelle(null);
 
-    // Create the SituationMatrimoniale, which fails.
+        restSituationMatrimonialeMockMvc.perform(post("/api/situation-matrimoniales").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale)))
+            .andExpect(status().isBadRequest());
 
-    restSituationMatrimonialeMockMvc
-      .perform(
-        post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isBadRequest());
+        List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
+        assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeTest);
+    }
 
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeTest);
-  }
+    @Test
+    @Transactional
+    public void getAllSituationMatrimoniales() throws Exception {
+        // Initialize the database
+        situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
 
-  @Test
-  @Transactional
-  void getAllSituationMatrimoniales() throws Exception {
-    // Initialize the database
-    situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
+        // Get all the situationMatrimonialeList
+        restSituationMatrimonialeMockMvc.perform(get("/api/situation-matrimoniales?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(situationMatrimoniale.getId().intValue())))
+            .andExpect(jsonPath("$.[*].libelle").value(hasItem(DEFAULT_LIBELLE)));
+    }
+    
+    @Test
+    @Transactional
+    public void getSituationMatrimoniale() throws Exception {
+        // Initialize the database
+        situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
 
-    // Get all the situationMatrimonialeList
-    restSituationMatrimonialeMockMvc
-      .perform(get(ENTITY_API_URL + "?sort=id,desc"))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(jsonPath("$.[*].id").value(hasItem(situationMatrimoniale.getId().intValue())))
-      .andExpect(jsonPath("$.[*].libelle").value(hasItem(DEFAULT_LIBELLE)));
-  }
+        // Get the situationMatrimoniale
+        restSituationMatrimonialeMockMvc.perform(get("/api/situation-matrimoniales/{id}", situationMatrimoniale.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id").value(situationMatrimoniale.getId().intValue()))
+            .andExpect(jsonPath("$.libelle").value(DEFAULT_LIBELLE));
+    }
+    @Test
+    @Transactional
+    public void getNonExistingSituationMatrimoniale() throws Exception {
+        // Get the situationMatrimoniale
+        restSituationMatrimonialeMockMvc.perform(get("/api/situation-matrimoniales/{id}", Long.MAX_VALUE))
+            .andExpect(status().isNotFound());
+    }
 
-  @Test
-  @Transactional
-  void getSituationMatrimoniale() throws Exception {
-    // Initialize the database
-    situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
+    @Test
+    @Transactional
+    public void updateSituationMatrimoniale() throws Exception {
+        // Initialize the database
+        situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
 
-    // Get the situationMatrimoniale
-    restSituationMatrimonialeMockMvc
-      .perform(get(ENTITY_API_URL_ID, situationMatrimoniale.getId()))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(jsonPath("$.id").value(situationMatrimoniale.getId().intValue()))
-      .andExpect(jsonPath("$.libelle").value(DEFAULT_LIBELLE));
-  }
+        int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
 
-  @Test
-  @Transactional
-  void getNonExistingSituationMatrimoniale() throws Exception {
-    // Get the situationMatrimoniale
-    restSituationMatrimonialeMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
-  }
+        // Update the situationMatrimoniale
+        SituationMatrimoniale updatedSituationMatrimoniale = situationMatrimonialeRepository.findById(situationMatrimoniale.getId()).get();
+        // Disconnect from session so that the updates on updatedSituationMatrimoniale are not directly saved in db
+        em.detach(updatedSituationMatrimoniale);
+        updatedSituationMatrimoniale.setLibelle(UPDATED_LIBELLE);
 
-  @Test
-  @Transactional
-  void putNewSituationMatrimoniale() throws Exception {
-    // Initialize the database
-    situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
+        restSituationMatrimonialeMockMvc.perform(put("/api/situation-matrimoniales").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(updatedSituationMatrimoniale)))
+            .andExpect(status().isOk());
 
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
+        // Validate the SituationMatrimoniale in the database
+        List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
+        assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
+        SituationMatrimoniale testSituationMatrimoniale = situationMatrimonialeList.get(situationMatrimonialeList.size() - 1);
+        assertThat(testSituationMatrimoniale.getLibelle()).isEqualTo(UPDATED_LIBELLE);
+    }
 
-    // Update the situationMatrimoniale
-    SituationMatrimoniale updatedSituationMatrimoniale = situationMatrimonialeRepository.findById(situationMatrimoniale.getId()).get();
-    // Disconnect from session so that the updates on updatedSituationMatrimoniale are not directly saved in db
-    em.detach(updatedSituationMatrimoniale);
-    updatedSituationMatrimoniale.libelle(UPDATED_LIBELLE);
+    @Test
+    @Transactional
+    public void updateNonExistingSituationMatrimoniale() throws Exception {
+        int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
 
-    restSituationMatrimonialeMockMvc
-      .perform(
-        put(ENTITY_API_URL_ID, updatedSituationMatrimoniale.getId())
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(TestUtil.convertObjectToJsonBytes(updatedSituationMatrimoniale))
-      )
-      .andExpect(status().isOk());
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        restSituationMatrimonialeMockMvc.perform(put("/api/situation-matrimoniales").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale)))
+            .andExpect(status().isBadRequest());
 
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-    SituationMatrimoniale testSituationMatrimoniale = situationMatrimonialeList.get(situationMatrimonialeList.size() - 1);
-    assertThat(testSituationMatrimoniale.getLibelle()).isEqualTo(UPDATED_LIBELLE);
-  }
+        // Validate the SituationMatrimoniale in the database
+        List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
+        assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
+    }
 
-  @Test
-  @Transactional
-  void putNonExistingSituationMatrimoniale() throws Exception {
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-    situationMatrimoniale.setId(count.incrementAndGet());
+    @Test
+    @Transactional
+    public void deleteSituationMatrimoniale() throws Exception {
+        // Initialize the database
+        situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
 
-    // If the entity doesn't have an ID, it will throw BadRequestAlertException
-    restSituationMatrimonialeMockMvc
-      .perform(
-        put(ENTITY_API_URL_ID, situationMatrimoniale.getId())
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isBadRequest());
+        int databaseSizeBeforeDelete = situationMatrimonialeRepository.findAll().size();
 
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-  }
+        // Delete the situationMatrimoniale
+        restSituationMatrimonialeMockMvc.perform(delete("/api/situation-matrimoniales/{id}", situationMatrimoniale.getId()).with(csrf())
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
 
-  @Test
-  @Transactional
-  void putWithIdMismatchSituationMatrimoniale() throws Exception {
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-    situationMatrimoniale.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restSituationMatrimonialeMockMvc
-      .perform(
-        put(ENTITY_API_URL_ID, count.incrementAndGet())
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isBadRequest());
-
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void putWithMissingIdPathParamSituationMatrimoniale() throws Exception {
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-    situationMatrimoniale.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restSituationMatrimonialeMockMvc
-      .perform(
-        put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isMethodNotAllowed());
-
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void partialUpdateSituationMatrimonialeWithPatch() throws Exception {
-    // Initialize the database
-    situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
-
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-
-    // Update the situationMatrimoniale using partial update
-    SituationMatrimoniale partialUpdatedSituationMatrimoniale = new SituationMatrimoniale();
-    partialUpdatedSituationMatrimoniale.setId(situationMatrimoniale.getId());
-
-    restSituationMatrimonialeMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, partialUpdatedSituationMatrimoniale.getId())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(partialUpdatedSituationMatrimoniale))
-      )
-      .andExpect(status().isOk());
-
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-    SituationMatrimoniale testSituationMatrimoniale = situationMatrimonialeList.get(situationMatrimonialeList.size() - 1);
-    assertThat(testSituationMatrimoniale.getLibelle()).isEqualTo(DEFAULT_LIBELLE);
-  }
-
-  @Test
-  @Transactional
-  void fullUpdateSituationMatrimonialeWithPatch() throws Exception {
-    // Initialize the database
-    situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
-
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-
-    // Update the situationMatrimoniale using partial update
-    SituationMatrimoniale partialUpdatedSituationMatrimoniale = new SituationMatrimoniale();
-    partialUpdatedSituationMatrimoniale.setId(situationMatrimoniale.getId());
-
-    partialUpdatedSituationMatrimoniale.libelle(UPDATED_LIBELLE);
-
-    restSituationMatrimonialeMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, partialUpdatedSituationMatrimoniale.getId())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(partialUpdatedSituationMatrimoniale))
-      )
-      .andExpect(status().isOk());
-
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-    SituationMatrimoniale testSituationMatrimoniale = situationMatrimonialeList.get(situationMatrimonialeList.size() - 1);
-    assertThat(testSituationMatrimoniale.getLibelle()).isEqualTo(UPDATED_LIBELLE);
-  }
-
-  @Test
-  @Transactional
-  void patchNonExistingSituationMatrimoniale() throws Exception {
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-    situationMatrimoniale.setId(count.incrementAndGet());
-
-    // If the entity doesn't have an ID, it will throw BadRequestAlertException
-    restSituationMatrimonialeMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, situationMatrimoniale.getId())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isBadRequest());
-
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void patchWithIdMismatchSituationMatrimoniale() throws Exception {
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-    situationMatrimoniale.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restSituationMatrimonialeMockMvc
-      .perform(
-        patch(ENTITY_API_URL_ID, count.incrementAndGet())
-          .contentType("application/merge-patch+json")
-          .content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isBadRequest());
-
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void patchWithMissingIdPathParamSituationMatrimoniale() throws Exception {
-    int databaseSizeBeforeUpdate = situationMatrimonialeRepository.findAll().size();
-    situationMatrimoniale.setId(count.incrementAndGet());
-
-    // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-    restSituationMatrimonialeMockMvc
-      .perform(
-        patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(situationMatrimoniale))
-      )
-      .andExpect(status().isMethodNotAllowed());
-
-    // Validate the SituationMatrimoniale in the database
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
-  void deleteSituationMatrimoniale() throws Exception {
-    // Initialize the database
-    situationMatrimonialeRepository.saveAndFlush(situationMatrimoniale);
-
-    int databaseSizeBeforeDelete = situationMatrimonialeRepository.findAll().size();
-
-    // Delete the situationMatrimoniale
-    restSituationMatrimonialeMockMvc
-      .perform(delete(ENTITY_API_URL_ID, situationMatrimoniale.getId()).accept(MediaType.APPLICATION_JSON))
-      .andExpect(status().isNoContent());
-
-    // Validate the database contains one less item
-    List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
-    assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeDelete - 1);
-  }
+        // Validate the database contains one less item
+        List<SituationMatrimoniale> situationMatrimonialeList = situationMatrimonialeRepository.findAll();
+        assertThat(situationMatrimonialeList).hasSize(databaseSizeBeforeDelete - 1);
+    }
 }
